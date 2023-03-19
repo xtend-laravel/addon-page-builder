@@ -1,0 +1,26 @@
+{
+    "name": "xtend-laravel/addon-page-builder",
+    "description": "Page builder addon for Lunar",
+    "type": "xtend-addon",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "XtendLunar\\Addons\\PageBuilder\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Adam Lee",
+            "email": "adam@codelabx.ltd"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "XtendLunar\\Addons\\PageBuilder\\PageBuilderProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
