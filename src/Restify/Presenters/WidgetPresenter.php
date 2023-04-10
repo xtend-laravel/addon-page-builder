@@ -13,10 +13,10 @@ class WidgetPresenter extends PresenterResource implements Presentable
 
     public function transform(RestifyRequest $request): array
     {
-        if ($this->data['data'] ?? false) {
-            $this->modelClassForReplacements = $this->data['data']['model'] ?? null;
-            $this->data['data'] = $this->handleDataReplacementsRecursive($this->data['data']);
-        }
+        // if ($this->data['data'] ?? false) {
+        //     $this->modelClassForReplacements = $this->data['data']['model'] ?? null;
+        //     $this->data['data'] = $this->handleDataReplacementsRecursive($this->data['data']);
+        // }
 
         if ($this->data['type'] === 'Collection') {
             $this->data['items'] = $this->getter($request, 'items-collection');
@@ -42,7 +42,7 @@ class WidgetPresenter extends PresenterResource implements Presentable
 
     protected function handleReplacement(array $item): array
     {
-        $identifier = $this->queryParams[$this->data['data']['identifier']] ?? null;
+        //$identifier = $this->queryParams[$this->data['data']['identifier']] ?? null;
         //dd($this->data['data']['lookup_field'], $lookupField, $this->queryParams, $item, $this->modelClassForReplacements);
         //$model = resolve($this->modelClassForReplacements)->find($identifier);
         //dd($model);
