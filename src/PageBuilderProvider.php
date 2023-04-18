@@ -24,11 +24,6 @@ class PageBuilderProvider extends XtendAddonProvider
     {
         Blade::componentNamespace('XtendLunar\\Addons\\PageBuilder\\Components', 'xtend-lunar-page-builder');
 
-        $this->registerSidebarMenu();
-    }
-
-    protected function registerSidebarMenu(): void
-    {
         Menu::slot('sidebar')
             ->group('hub.configure')
             ->addItem(function (MenuLink $item) {
