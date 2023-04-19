@@ -14,9 +14,9 @@ class Edit extends Component implements HasForms
 
     public Widget $widget;
 
-    public function mount(Widget $widget)
+    public function mount()
     {
-        dd($widget->toArray());
+        dd($this->widget->toArray());
     }
 
     protected function getFormSchema(): array
