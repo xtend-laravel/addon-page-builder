@@ -2,7 +2,11 @@
 
 namespace XtendLunar\Addons\PageBuilder\Livewire\Widgets\Tables;
 
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,6 +30,15 @@ class WidgetsTable extends Component implements HasTable
             TextColumn::make('name'),
             TextColumn::make('type'),
             TextColumn::make('component'),
+            ToggleColumn::make('enabled'),
+        ];
+    }
+
+    public function getTableActions(): array
+    {
+        return [
+            EditAction::make(),
+            DeleteAction::make(),
         ];
     }
 
