@@ -7,6 +7,8 @@ use CodeLabX\XtendLaravel\Base\XtendAddonProvider;
 use Illuminate\Support\Facades\Blade;
 use Lunar\Hub\Facades\Menu;
 use Lunar\Hub\Menu\MenuLink;
+use Livewire\Livewire;
+use XtendLunar\Addons\PageBuilder\Livewire\Widgets\Tables\WidgetsTable;
 
 class PageBuilderProvider extends XtendAddonProvider
 {
@@ -18,6 +20,8 @@ class PageBuilderProvider extends XtendAddonProvider
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'xtend-lunar-page-builder');
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'xtend-lunar-page-builder');
         $this->loadRestifyFrom(__DIR__ . '/Restify', __NAMESPACE__ . '\\Restify\\');
+
+        $this->registerLivewireComponents();
     }
 
     public function boot()
@@ -32,5 +36,10 @@ class PageBuilderProvider extends XtendAddonProvider
                     ->route('hub.page-builder.index')
                     ->icon('cube');
             });
+    }
+
+    protected function registerLivewireComponents()
+    {
+        Livewire::component('xtend-lunar-page-builder.widgets.table', WidgetsTable::class);
     }
 }
