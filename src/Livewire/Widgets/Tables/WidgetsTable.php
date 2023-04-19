@@ -37,7 +37,7 @@ class WidgetsTable extends Component implements HasTable
     public function getTableActions(): array
     {
         return [
-            EditAction::make(),
+            EditAction::make()->url(fn($record) => route('hub.page-builder.widgets.edit', $record)),
             DeleteAction::make(),
         ];
     }
