@@ -10,7 +10,7 @@ class PageBuilderIndex extends Component
 {
     public function render()
     {
-        return view('xtend-lunar-page-builder::livewire.page-builder.index')
+        return view('xtend-lunar-page-builder::livewire.pages.page-builder.index')
             ->layout('adminhub::layouts.app');
     }
 }

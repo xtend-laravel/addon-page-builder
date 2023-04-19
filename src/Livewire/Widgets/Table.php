@@ -1,6 +1,6 @@
 <?php
 
-namespace XtendLunar\Addons\PageBuilder\Livewire\Widgets\Tables;
+namespace XtendLunar\Addons\PageBuilder\Livewire\Widgets;
 
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Livewire\Component;
 use Xtend\Extensions\Lunar\Core\Models\Widget;
 
-class WidgetsTable extends Component implements HasTable
+class Table extends Component implements HasTable
 {
     use InteractsWithTable;
 
