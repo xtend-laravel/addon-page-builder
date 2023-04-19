@@ -2,6 +2,14 @@
 
 namespace XtendLunar\Addons\PageBuilder\Fields;
 
-class Image extends Field
+use Filament\Forms\Components\FileUpload;
+
+class Image extends FileUpload
 {
+    protected function setUp(): void
+    {
+        $this->image()
+            ->directory('page-builder')
+            ->maxSize(5 * 1024);
+    }
 }

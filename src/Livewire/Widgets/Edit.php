@@ -12,6 +12,7 @@ use Livewire\Component;
 use Ramsey\Uuid\Fields\SerializableFieldsTrait;
 use Xtend\Extensions\Lunar\Core\Models\Widget;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
+use XtendLunar\Addons\PageBuilder\Fields\Image;
 use XtendLunar\Addons\PageBuilder\Fields\Text;
 
 class Edit extends Component implements HasForms
@@ -55,7 +56,7 @@ class Edit extends Component implements HasForms
             ->schema([
                 TextInput::make('data.title')->columnSpan(2),
                 Textarea::make('data.description')->columnSpan(2),
-                FileUpload::make('data.image')->image()->maxSize(5 * 1024)->directory('page-builder')->columnSpan(2),
+                Image::make('data.image')->image()->maxSize(5 * 1024)->directory('page-builder')->columnSpan(2),
                 TextInput::make('data.cta')->label('Call to action text')->columnSpan(1),
                 TextInput::make('data.route')->label('Url')->columnSpan(1),
                 TextInput::make('data.placement'),
