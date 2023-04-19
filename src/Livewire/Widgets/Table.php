@@ -38,7 +38,7 @@ class Table extends Component implements HasTable
     {
         return [
             EditAction::make()->url(fn($record) => route('hub.page-builder.widgets.edit', $record)),
-            DeleteAction::make(),
+//            DeleteAction::make(),
         ];
     }
 
