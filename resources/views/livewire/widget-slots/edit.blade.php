@@ -1,4 +1,7 @@
 <form wire:submit.prevent="submit">
+    <!-- where it should be?? -->
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+
     {{ $this->form }}
 
     <div class="fixed bottom-0 right-0 z-40 border-t border-gray-100 bg-white/75 p-6 lg:left-auto"

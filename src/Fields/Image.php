@@ -9,7 +9,10 @@ class Image extends FileUpload
     protected function setUp(): void
     {
         $this->image()
+            ->disk('public')
             ->directory('page-builder')
-            ->maxSize(5 * 1024);
+            ->visibility('public')
+            ->maxSize(5 * 1024)
+        ;
     }
 }
