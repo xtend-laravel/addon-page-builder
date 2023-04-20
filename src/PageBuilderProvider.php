@@ -42,5 +42,6 @@ class PageBuilderProvider extends XtendAddonProvider
     {
         Livewire::component('xtend-lunar-page-builder.widgets.table', Table::class);
         Livewire::component('xtend-lunar-page-builder.widgets.edit', \XtendLunar\Addons\PageBuilder\Livewire\Widgets\Edit::class);
+        Livewire::component('xtend-lunar-page-builder.widget-slots.table', \XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table::class);
     }
 }

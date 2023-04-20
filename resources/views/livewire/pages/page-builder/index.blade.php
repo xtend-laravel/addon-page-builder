@@ -1,3 +1,3 @@
 <div>
-    @livewire('xtend-lunar-page-builder.widgets.table')
+    @livewire('xtend-lunar-page-builder.widget-slots.table')
 </div>
