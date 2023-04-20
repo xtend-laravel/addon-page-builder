@@ -77,7 +77,7 @@ class Edit extends Component implements HasForms
                             TextInput::make('rows'),
                             $this->settingsDataForm(WidgetType::Collection),
                         ])
-                ])
+                ])->collapsible()->collapsed()
         ];
     }
 
