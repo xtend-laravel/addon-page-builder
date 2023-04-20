@@ -36,7 +36,7 @@ class Table extends Component implements HasTable
     public function getTableActions(): array
     {
         return [
-            EditAction::make()->url(fn($record) => route('hub.page-builder.widgets.edit', $record)),
+            EditAction::make()->url(fn($record) => route('hub.page-builder.widget-slots.edit', $record)),
 //            DeleteAction::make(),
         ];
     }
