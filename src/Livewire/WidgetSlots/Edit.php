@@ -55,8 +55,8 @@ class Edit extends Component implements HasForms
                             TextInput::make('id')->disabled(),
                             TextInput::make('name'),
                             TextInput::make('component'),
-                            TextInput::make('cols'),
-                            TextInput::make('rows'),
+                            TextInput::make('cols')->default(12),
+                            TextInput::make('rows')->default(1),
                             $this->settingsDataForm(WidgetType::Advertisement),
                         ]),
                     Builder\Block::make(WidgetType::Content->value)
@@ -64,8 +64,8 @@ class Edit extends Component implements HasForms
                             TextInput::make('id')->disabled(),
                             TextInput::make('name'),
                             TextInput::make('component'),
-                            TextInput::make('cols'),
-                            TextInput::make('rows'),
+                            TextInput::make('cols')->default(12),
+                            TextInput::make('rows')->default(1),
                             $this->settingsDataForm(WidgetType::Content),
                         ]),
                     Builder\Block::make(WidgetType::Collection->value)
@@ -73,8 +73,8 @@ class Edit extends Component implements HasForms
                             TextInput::make('id')->disabled(),
                             TextInput::make('name'),
                             TextInput::make('component'),
-                            TextInput::make('cols'),
-                            TextInput::make('rows'),
+                            TextInput::make('cols')->default(12),
+                            TextInput::make('rows')->default(1),
                             $this->settingsDataForm(WidgetType::Collection),
                         ])
                 ])->collapsible()->collapsed()
@@ -142,9 +142,10 @@ class Edit extends Component implements HasForms
 
         foreach ($this->form->getState()['widgets'] as $attributes) {
             if ($attributes['data']['id']) {
-                $this->widgetSlot->widgets()->find($attributes['data']['id'])->forceFill($attributes['data'])->update();
+               Widget::query()->find($attributes['data']['id'])->forceFill($attributes['data'])->update();
             } else {
-                $this->widgetSlot->widgets()->forceCreate($attributes['data']);
+                $widget = Widget::query()->forceCreate($attributes['data'] + ['type' => $attributes['type']]);
+                $this->widgetSlot->widgets()->attach($widget);
             }
         }
     }
