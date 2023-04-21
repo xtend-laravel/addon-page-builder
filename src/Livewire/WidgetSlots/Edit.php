@@ -11,8 +11,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
-use Livewire\TemporaryUploadedFile;
-use Lunar\Models\Product;
+use Xtend\Extensions\Lunar\Core\Models\Collection;
 use Xtend\Extensions\Lunar\Core\Models\Widget;
 use Xtend\Extensions\Lunar\Core\Models\WidgetSlot;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
@@ -127,7 +126,7 @@ class Edit extends Component implements HasForms
                 Select::make('params.order')->options(['asc' => 'Ascending', 'desc' => 'Descending']),
                 TextInput::make('params.limit'),
                 Select::make('params.collection_id')
-                    ->options(\Xtend\Extensions\Lunar\Core\Models\Collection::where('type', 'category')
+                    ->options(Collection::where('type', 'category')
                         ->get()
                         ->mapWithKeys(fn($collection) => [$collection->id => $collection->translateAttribute('name')]))
                     ->label('Collection')
@@ -140,14 +139,17 @@ class Edit extends Component implements HasForms
     {
         $this->widgetSlot->forceFill($this->form->getStateONly(['description', 'identifier']))->save();
 
-        foreach ($this->form->getState()['widgets'] as $attributes) {
-            if ($attributes['data']['id']) {
-               Widget::query()->find($attributes['data']['id'])->forceFill($attributes['data'])->update();
-            } else {
-                $widget = Widget::query()->forceCreate($attributes['data'] + ['type' => $attributes['type']]);
-                $this->widgetSlot->widgets()->attach($widget);
-            }
+        $widgetIds = [];
+
+        foreach ($this->form->getState()['widgets'] as ['type' => $type, 'data' => $data]) {
+            $attributes = $data + ['type' => $type];
+
+            $widget = Widget::query()->updateOrCreate(['id' => $data['id']], $attributes);
+
+            $widgetIds[] = $widget->id;
         }
+
+        $this->widgetSlot->widgets()->sync($widgetIds);
     }
 
     public function render()
