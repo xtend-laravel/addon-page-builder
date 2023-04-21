@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Blade;
 use Lunar\Hub\Facades\Menu;
 use Lunar\Hub\Menu\MenuLink;
 use Livewire\Livewire;
-use XtendLunar\Addons\PageBuilder\Livewire\Widgets\Table;
 
 class PageBuilderProvider extends XtendAddonProvider
 {
@@ -40,7 +39,6 @@ class PageBuilderProvider extends XtendAddonProvider
 
     protected function registerLivewireComponents()
     {
-        Livewire::component('xtend-lunar-page-builder.widgets.table', Table::class);
         Livewire::component('xtend-lunar-page-builder.widget-slots.table', \XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table::class);
         Livewire::component('xtend-lunar-page-builder.widget-slots.edit', \XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit::class);
     }
