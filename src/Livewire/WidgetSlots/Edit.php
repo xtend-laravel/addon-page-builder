@@ -2,9 +2,7 @@
 
 namespace XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots;
 
-use Database\Seeders\PaymentGatewaySeeder;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Builder;
@@ -20,7 +18,6 @@ use Xtend\Extensions\Lunar\Core\Models\Widget;
 use Xtend\Extensions\Lunar\Core\Models\WidgetSlot;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
 use XtendLunar\Addons\PageBuilder\Fields\Image;
-use XtendLunar\Addons\PageBuilder\Fields\Text;
 use Filament\Forms\Components\Select;
 
 class Edit extends Component implements HasForms
@@ -44,12 +41,16 @@ class Edit extends Component implements HasForms
         ]);
     }
 
-    protected function widgetSchema(): array
+    protected function widgetSchema(WidgetType $widgetType): array
     {
+        $components = config('xtend-lunar-page-builder.components')[strtolower($widgetType->value)] ?? [];
+
         return [
             TextInput::make('id')->disabled()->hidden(),
             TextInput::make('name')->columnSpan(2),
-            TextInput::make('component')->columnSpan(2),
+            Select::make('component')->options(
+                collect($components)->map(fn ($component) => class_basename($component))->toArray(),
+            )->columnSpan(2),
             Select::make('cols')->options(range(1, 12))->columnSpan(1),
             Select::make('rows')->options(range(1, 12))->columnSpan(1),
             Select::make('col_start')->options(range(1, 12))->columnSpan(1),
@@ -68,17 +69,17 @@ class Edit extends Component implements HasForms
                 ->blocks([
                     Builder\Block::make(WidgetType::Advertisement->value)
                         ->schema([
-                            ...$this->widgetSchema(),
+                            ...$this->widgetSchema(WidgetType::Advertisement),
                             $this->settingsDataForm(WidgetType::Advertisement)
                         ])->columns(4),
                     Builder\Block::make(WidgetType::Content->value)
                         ->schema([
-                            ...$this->widgetSchema(),
+                            ...$this->widgetSchema(WidgetType::Content),
                             $this->settingsDataForm(WidgetType::Content)
                         ])->columns(4),
                     Builder\Block::make(WidgetType::Collection->value)
                         ->schema([
-                            ...$this->widgetSchema(),
+                            ...$this->widgetSchema(WidgetType::Collection),
                             $this->settingsDataForm(WidgetType::Collection),
                         ])->columns(4)
                 ])
@@ -140,7 +141,7 @@ class Edit extends Component implements HasForms
 
     public function submit()
     {
-//        dd($this->form->getState());
+        //dd($this->form->getState());
         $this->widgetSlot->forceFill($this->form->getStateOnly(['description', 'identifier']))->save();
 
         $widgetIds = [];
