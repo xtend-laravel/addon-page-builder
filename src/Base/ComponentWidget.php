@@ -6,14 +6,11 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Str;
-use XtendLunar\Addons\PageBuilder\Concerns\InteractsWithMediaSettings;
 use XtendLunar\Addons\PageBuilder\Contracts\Widget;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
 
 class ComponentWidget
 {
-    use InteractsWithMediaSettings;
-
     public static function defaultSchema(WidgetType $widgetType): array
     {
         $components = config('xtend-lunar-page-builder.components')[strtolower($widgetType->value)] ?? [];
@@ -37,16 +34,20 @@ class ComponentWidget
     {
         return [
             Section::make('Component Settings')
-                //->visible(fn(\Closure $get) => $get('component'))
+                ->visible(fn(\Closure $get) => $get('component'))
                 ->columnSpanFull()
-                ->schema(fn(\Closure $get, array $state) => [
-                    ...static::widgetComponentScheme($get('component'), $widgetType)
-                ]),
+                ->schema(
+                    fn(\Closure $get, array $state) => static::widgetComponentScheme($get('component'), $widgetType),
+                ),
             ];
     }
 
-    protected static function widgetComponentScheme(string $componentName, WidgetType $type): array
+    protected static function widgetComponentScheme(?string $componentName, WidgetType $type): array
     {
+        if (!$componentName) {
+            return [];
+        }
+
         $widgetNamespace = Str::of(__NAMESPACE__)->replace('Base', 'Components')->value();
         $componentAbstract = $widgetNamespace.'\\'.$type->value.'\\'.Str::of($componentName)->replace($type->value, '')->value();
 
