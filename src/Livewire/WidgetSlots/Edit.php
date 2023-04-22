@@ -47,11 +47,13 @@ class Edit extends Component implements HasForms
     protected function widgetSchema(): array
     {
         return [
-            TextInput::make('id')->disabled(),
-            TextInput::make('name'),
-            TextInput::make('component'),
-            TextInput::make('cols')->default(12),
-            TextInput::make('rows')->default(1)
+            TextInput::make('id')->disabled()->hidden(),
+            TextInput::make('name')->columnSpan(2),
+            TextInput::make('component')->columnSpan(2),
+            Select::make('cols')->options(range(1, 12))->columnSpan(1),
+            Select::make('rows')->options(range(1, 12))->columnSpan(1),
+            Select::make('col_start')->options(range(1, 12))->columnSpan(1),
+            Select::make('row_start')->options(range(1, 12))->columnSpan(1),
         ];
     }
 
@@ -68,17 +70,17 @@ class Edit extends Component implements HasForms
                         ->schema([
                             ...$this->widgetSchema(),
                             $this->settingsDataForm(WidgetType::Advertisement)
-                        ]),
+                        ])->columns(4),
                     Builder\Block::make(WidgetType::Content->value)
                         ->schema([
                             ...$this->widgetSchema(),
                             $this->settingsDataForm(WidgetType::Content)
-                        ]),
+                        ])->columns(4),
                     Builder\Block::make(WidgetType::Collection->value)
                         ->schema([
                             ...$this->widgetSchema(),
                             $this->settingsDataForm(WidgetType::Collection),
-                        ])
+                        ])->columns(4)
                 ])
                 ->collapsible()
 //                ->collapsed()
