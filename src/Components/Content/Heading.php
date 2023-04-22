@@ -2,10 +2,13 @@
 
 namespace XtendLunar\Addons\PageBuilder\Components\Content;
 
-use XtendLunar\Addons\PageBuilder\Contracts\ContentWidget;
+use XtendLunar\Addons\PageBuilder\Components\ContentWidget;
 use XtendLunar\Addons\PageBuilder\Contracts\Widget;
 
-class Heading implements ContentWidget, Widget
+class Heading extends ContentWidget implements Widget
 {
-
+    public function schema(): array
+    {
+        return array_merge(parent::schema(), []);
+    }
 }
