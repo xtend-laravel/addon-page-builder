@@ -12,6 +12,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
 use Xtend\Extensions\Lunar\Core\Models\Collection;
@@ -152,6 +153,14 @@ class Edit extends Component implements HasForms
 
         foreach ($this->form->getState()['widgets'] as ['type' => $type, 'data' => $data]) {
             $attributes = Arr::except($data + ['type' => $type], 'upload_image');
+
+            if ($type === WidgetType::Advertisement->value) {
+                $tmpImage = Arr::first($data['upload_image']);
+                if ($tmpImage instanceof TemporaryUploadedFile) {
+                    $path = $tmpImage->storePublicly('page-builder');
+                    $attributes['data']['image'] = $url = Storage::url($path);
+                }
+            }
 
             Widget::unguard();
 
