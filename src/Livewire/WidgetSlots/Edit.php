@@ -101,15 +101,8 @@ class Edit extends Component implements HasForms
             ->schema([
                 TextInput::make('data.title')->columnSpan(2),
                 Textarea::make('data.description')->columnSpan(2),
-//                Image::make('data.image')->columnSpan(2),
                 TextInput::make('data.image'),
-                Image::make('upload_image')
-                    ->afterStateUpdated(function (\Closure $set, $state) {
-//                        dump($state);
-                        if ($state instanceof TemporaryUploadedFile) {
-                            $set('data.image', $state->temporaryUrl());
-                        }
-                    })->imagePreviewHeight(100),
+                Image::make('upload_image')->imagePreviewHeight(100),
                 TextInput::make('data.cta')->label('Call to action text')->columnSpan(1),
                 TextInput::make('data.route')->label('Url')->columnSpan(1),
                 TextInput::make('data.placement'),
