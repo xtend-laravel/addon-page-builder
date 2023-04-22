@@ -49,7 +49,9 @@ class Edit extends Component implements HasForms
             TextInput::make('id')->disabled()->hidden(),
             TextInput::make('name')->columnSpan(2),
             Select::make('component')->options(
-                collect($components)->map(fn ($component) => class_basename($component))->toArray(),
+                collect($components)->flatMap(fn ($component) => [
+                    $widgetType->value.class_basename($component) => class_basename($component),
+                ])->toArray(),
             )->columnSpan(2),
             Select::make('cols')->options(range(1, 12))->columnSpan(1),
             Select::make('rows')->options(range(1, 12))->columnSpan(1),
