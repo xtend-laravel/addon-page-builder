@@ -2,6 +2,7 @@
 
 namespace XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots;
 
+use Database\Seeders\PaymentGatewaySeeder;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
@@ -10,7 +11,9 @@ use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Illuminate\Support\Arr;
 use Livewire\Component;
+use Livewire\TemporaryUploadedFile;
 use Xtend\Extensions\Lunar\Core\Models\Collection;
 use Xtend\Extensions\Lunar\Core\Models\Widget;
 use Xtend\Extensions\Lunar\Core\Models\WidgetSlot;
@@ -76,7 +79,9 @@ class Edit extends Component implements HasForms
                             TextInput::make('rows')->default(1),
                             $this->settingsDataForm(WidgetType::Collection),
                         ])
-                ])->collapsible()->collapsed()
+                ])
+                ->collapsible()
+//                ->collapsed()
         ];
     }
 
@@ -97,9 +102,12 @@ class Edit extends Component implements HasForms
                 Textarea::make('data.description')->columnSpan(2),
 //                Image::make('data.image')->columnSpan(2),
                 TextInput::make('data.image'),
-                Image::make('data.upload_image')
+                Image::make('upload_image')
                     ->afterStateUpdated(function (\Closure $set, $state) {
-                        $set('data.image', $state->temporaryUrl());
+//                        dump($state);
+                        if ($state instanceof TemporaryUploadedFile) {
+                            $set('data.image', $state->temporaryUrl());
+                        }
                     })->imagePreviewHeight(100),
                 TextInput::make('data.cta')->label('Call to action text')->columnSpan(1),
                 TextInput::make('data.route')->label('Url')->columnSpan(1),
@@ -137,12 +145,15 @@ class Edit extends Component implements HasForms
 
     public function submit()
     {
-        $this->widgetSlot->forceFill($this->form->getStateONly(['description', 'identifier']))->save();
+//        dd($this->form->getState());
+        $this->widgetSlot->forceFill($this->form->getStateOnly(['description', 'identifier']))->save();
 
         $widgetIds = [];
 
         foreach ($this->form->getState()['widgets'] as ['type' => $type, 'data' => $data]) {
-            $attributes = $data + ['type' => $type];
+            $attributes = Arr::except($data + ['type' => $type], 'upload_image');
+
+            Widget::unguard();
 
             $widget = Widget::query()->updateOrCreate(['id' => $data['id']], $attributes);
 
