@@ -44,6 +44,17 @@ class Edit extends Component implements HasForms
         ]);
     }
 
+    protected function widgetSchema(): array
+    {
+        return [
+            TextInput::make('id')->disabled(),
+            TextInput::make('name'),
+            TextInput::make('component'),
+            TextInput::make('cols')->default(12),
+            TextInput::make('rows')->default(1)
+        ];
+    }
+
     public function getFormSchema(): array
     {
         return [
@@ -55,29 +66,17 @@ class Edit extends Component implements HasForms
                 ->blocks([
                     Builder\Block::make(WidgetType::Advertisement->value)
                         ->schema([
-                            TextInput::make('id')->disabled(),
-                            TextInput::make('name'),
-                            TextInput::make('component'),
-                            TextInput::make('cols')->default(12),
-                            TextInput::make('rows')->default(1),
-                            $this->settingsDataForm(WidgetType::Advertisement),
+                            ...$this->widgetSchema(),
+                            $this->settingsDataForm(WidgetType::Advertisement)
                         ]),
                     Builder\Block::make(WidgetType::Content->value)
                         ->schema([
-                            TextInput::make('id')->disabled(),
-                            TextInput::make('name'),
-                            TextInput::make('component'),
-                            TextInput::make('cols')->default(12),
-                            TextInput::make('rows')->default(1),
-                            $this->settingsDataForm(WidgetType::Content),
+                            ...$this->widgetSchema(),
+                            $this->settingsDataForm(WidgetType::Content)
                         ]),
                     Builder\Block::make(WidgetType::Collection->value)
                         ->schema([
-                            TextInput::make('id')->disabled(),
-                            TextInput::make('name'),
-                            TextInput::make('component'),
-                            TextInput::make('cols')->default(12),
-                            TextInput::make('rows')->default(1),
+                            ...$this->widgetSchema(),
                             $this->settingsDataForm(WidgetType::Collection),
                         ])
                 ])
