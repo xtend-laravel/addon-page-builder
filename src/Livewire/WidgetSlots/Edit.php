@@ -7,7 +7,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Illuminate\Support\Collection;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Xtend\Extensions\Lunar\Core\Models\Widget;
 use Xtend\Extensions\Lunar\Core\Models\WidgetSlot;
 use XtendLunar\Addons\PageBuilder\Base\ComponentWidget;
@@ -16,6 +18,7 @@ use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
 class Edit extends Component implements HasForms
 {
     use InteractsWithForms;
+    use Notifies;
 
     public WidgetSlot $widgetSlot;
 
@@ -80,6 +83,7 @@ class Edit extends Component implements HasForms
         $this->widgetSlot->forceFill($this->form->getStateOnly(['description', 'identifier']))->save();
         $widgets = collect($this->form->getState()['widgets']);
 
+        $this->removeDeletedWidgets($widgets);
         $this->createNewWidgets($widgets);
         $this->widgetSlot->refresh();
 
@@ -93,9 +97,20 @@ class Edit extends Component implements HasForms
                 'slot_rows' => $widgetModel->rows,
             ]);
         });
+
+        $this->notify($this->widgetSlot->name.' widgets updated');
     }
 
-    protected function createNewWidgets($widgets): void
+    protected function removeDeletedWidgets(Collection $widgets): void
+    {
+        $widgetIdsToRemove = $this->widgetSlot->widgets()->pluck('widget_id')->diff($widgets->pluck('id')->filter())->values();
+        $this->widgetSlot->widgets()->find($widgetIdsToRemove)->each(function (Widget $widget) {
+            $this->widgetSlot->widgets()->detach($widget->id);
+            $widget->delete();
+        });
+    }
+
+    protected function createNewWidgets(Collection $widgets): void
     {
         $widgets->each(function ($widget) {
             if (!array_key_exists('id', $widget)) {
