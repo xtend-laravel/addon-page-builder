@@ -13,7 +13,7 @@ class FeaturedSlider extends AdvertisementWidget implements Widget
     public function schema(): array
     {
         return [
-            Repeater::make('featured_slider')
+            Repeater::make('data.slides')
                 ->disableLabel()
                 ->defaultItems(1)
                 ->itemLabel(fn (\Closure $get, array $state, Repeater $component): ?string => 'Item #')

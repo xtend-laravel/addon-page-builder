@@ -7,10 +7,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
-use Livewire\TemporaryUploadedFile;
 use Xtend\Extensions\Lunar\Core\Models\Widget;
 use Xtend\Extensions\Lunar\Core\Models\WidgetSlot;
 use XtendLunar\Addons\PageBuilder\Base\ComponentWidget;
@@ -37,8 +34,11 @@ class Edit extends Component implements HasForms
             'identifier'  => $this->widgetSlot->identifier,
             'widgets'     => $this->widgetSlot->widgets->map(function (Widget $widget) {
                 return [
+                    'id'   => $widget->id,
+                    'cols' => $widget->cols,
+                    'rows' => $widget->rows,
                     'type' => $widget->type,
-                    'data' => $widget->setHidden(['pivot', 'updated_at', 'created_at', 'type'])->toArray()
+                    'data' => $widget->setHidden(['pivot', 'updated_at', 'created_at', 'type', 'id'])->toArray(),
                 ];
             })->toArray(),
         ]);
@@ -77,30 +77,40 @@ class Edit extends Component implements HasForms
 
     public function submit()
     {
-        dd($this->form->getState());
         $this->widgetSlot->forceFill($this->form->getStateOnly(['description', 'identifier']))->save();
+        $widgets = collect($this->form->getState()['widgets']);
 
-        $widgetIds = [];
+        $this->createNewWidgets($widgets);
+        $this->widgetSlot->refresh();
 
-        foreach ($this->form->getState()['widgets'] as ['type' => $type, 'data' => $data]) {
-            $attributes = Arr::except($data + ['type' => $type], 'upload_image');
+        $widgets->filter(fn($widget) => array_key_exists('id', $widget))->each(function ($widget) {
+            $widgetModel = $this->widgetSlot->widgets()->find($widget['id']);
+            $prepareData = array_merge(['type' => $widget['type']], $widget['data']);
 
-            if ($type === WidgetType::Advertisement->value) {
-                $tmpImage = Arr::first($data['upload_image']);
-                if ($tmpImage instanceof TemporaryUploadedFile) {
-                    $path = $tmpImage->storePublicly('page-builder');
-                    $attributes['data']['image'] = $url = Storage::url($path);
+            $widgetModel->fill($prepareData)->save();
+            $this->widgetSlot->widgets()->updateExistingPivot($widget['id'], [
+                'slot_cols' => $widgetModel->cols,
+                'slot_rows' => $widgetModel->rows,
+            ]);
+        });
+    }
+
+    protected function createNewWidgets($widgets): void
+    {
+        $widgets->each(function ($widget) {
+            if (!array_key_exists('id', $widget)) {
+                $prepareData = array_merge(['type' => $widget['type']], $widget['data']);
+                if (empty($prepareData['name']) || empty($prepareData['component'])) {
+                    return;
                 }
+                $widgetModel = $this->widgetSlot->widgets()->create($prepareData);
+                $this->widgetSlot->widgets()->updateExistingPivot($widgetModel->id, [
+                    'slot_cols' => $widgetModel->cols,
+                    'slot_rows' => $widgetModel->rows,
+                    'position'  => $this->widgetSlot->widgets()->count() + 1,
+                ]);
             }
-
-            Widget::unguard();
-
-            $widget = Widget::query()->updateOrCreate(['id' => $data['id']], $attributes);
-
-            $widgetIds[] = $widget->id;
-        }
-
-        $this->widgetSlot->widgets()->sync($widgetIds);
+        });
     }
 
     public function render()
