@@ -17,6 +17,7 @@ class BlockNav extends ContentWidget implements Widget
     {
         return [
             Repeater::make('data.nav')
+                ->collapsed()
                 ->maxItems(6)
                 ->disableLabel()
                 ->defaultItems(1)

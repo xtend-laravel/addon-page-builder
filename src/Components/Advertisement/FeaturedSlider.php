@@ -14,9 +14,10 @@ class FeaturedSlider extends AdvertisementWidget implements Widget
     {
         return [
             Repeater::make('data.slides')
+                ->collapsed()
                 ->disableLabel()
                 ->defaultItems(1)
-                ->itemLabel(fn (\Closure $get, array $state, Repeater $component): ?string => 'Item #')
+                ->itemLabel('Item #')
                 ->createItemButtonLabel('Add Item')
                 ->schema([
                     ...parent::schema(),
