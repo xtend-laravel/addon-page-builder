@@ -2,18 +2,21 @@
 
 namespace XtendLunar\Addons\PageBuilder\Concerns;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
-use XtendLunar\Addons\PageBuilder\Fields\Image;
 
 trait InteractsWithMediaSettings
 {
     protected function mediaSchema(): array
     {
         return [
-            Section::make('Media')
+            Section::make(function (\Closure $get, \Closure $set) {
+                $set('data.media_type', $get('data.media_type') ?? 'image_upload');
+                return $get('data.media_type') === 'image_url' ? 'Image URL' : ($get('data.media_type') === 'image_upload' ? 'Image upload' : 'Video embed');
+            })
                 ->schema([
                     Placeholder::make('media_type_label')->label('Select media type')->columnSpan(2),
                     Radio::make('data.media_type')
@@ -29,7 +32,7 @@ trait InteractsWithMediaSettings
                     TextInput::make('data.image')
                         ->hidden(fn(\Closure $get) => $get('data.media_type') !== 'image_url')
                         ->columnSpan(2),
-                    Image::make('upload_image')->imagePreviewHeight(100)
+                    FileUpload::make('data.upload_image')
                         ->hidden(fn(\Closure $get) => $get('data.media_type') !== 'image_upload')
                         ->columnSpan(2),
                     TextInput::make('data.video')

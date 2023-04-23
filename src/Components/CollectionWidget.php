@@ -26,7 +26,7 @@ abstract class CollectionWidget implements Widget
                             ->get()
                             ->mapWithKeys(fn($collection) => [$collection->id => $collection->translateAttribute('name')]))
                         ->label('Collection')
-                        //->searchable(),
+                        ->searchable(),
                 ]),
         ];
     }

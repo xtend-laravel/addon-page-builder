@@ -33,7 +33,7 @@ class ComponentWidget
     public static function componentSchema(WidgetType $widgetType): array
     {
         return [
-            Section::make('Component Settings')
+            Section::make(fn(\Closure $get) => Str::of($get('component'))->after($widgetType->value)->headline())
                 ->visible(fn(\Closure $get) => $get('component'))
                 ->columnSpanFull()
                 ->schema(
@@ -50,6 +50,10 @@ class ComponentWidget
 
         $widgetNamespace = Str::of(__NAMESPACE__)->replace('Base', 'Components')->value();
         $componentAbstract = $widgetNamespace.'\\'.$type->value.'\\'.Str::of($componentName)->replace($type->value, '')->value();
+
+        if (!class_exists($componentAbstract)) {
+            return [];
+        }
 
         /** @var Widget $component */
         $component = resolve($componentAbstract);

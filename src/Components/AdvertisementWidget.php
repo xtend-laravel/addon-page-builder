@@ -12,10 +12,12 @@ abstract class AdvertisementWidget implements Widget
 {
     use InteractsWithMediaSettings;
 
+    protected static string $fieldsetLabel = 'Advertisement';
+
     public function schema(): array
     {
         return [
-            Fieldset::make('Data')
+            Fieldset::make(static::$fieldsetLabel)
                 ->schema([
                     TextInput::make('data.title')->columnSpan(2),
                     Textarea::make('data.description')->columnSpan(2),

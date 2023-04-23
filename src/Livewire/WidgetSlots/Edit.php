@@ -69,13 +69,15 @@ class Edit extends Component implements HasForms
                             ...ComponentWidget::componentSchema(WidgetType::Collection),
                         ])->columns(4)
                 ])
+                ->cloneable()
                 ->collapsible()
+                //->collapsed()
         ];
     }
 
     public function submit()
     {
-        //dd($this->form->getState());
+        dd($this->form->getState());
         $this->widgetSlot->forceFill($this->form->getStateOnly(['description', 'identifier']))->save();
 
         $widgetIds = [];
