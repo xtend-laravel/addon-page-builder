@@ -3,51 +3,40 @@
 namespace XtendLunar\Addons\PageBuilder\Restify\Presenters;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use XtendLunar\Addons\RestifyApi\Restify\Contracts\Presentable;
 use Binaryk\LaravelRestify\Http\Requests\RestifyRequest;
 use XtendLunar\Addons\RestifyApi\Restify\Presenters\PresenterResource;
 
 class WidgetPresenter extends PresenterResource implements Presentable
 {
-    protected ?string $modelClassForReplacements;
-
     public function transform(RestifyRequest $request): array
     {
-        // if ($this->data['data'] ?? false) {
-        //     $this->modelClassForReplacements = $this->data['data']['model'] ?? null;
-        //     $this->data['data'] = $this->handleDataReplacementsRecursive($this->data['data']);
-        // }
-
         if ($this->data['type'] === 'Collection') {
             $this->data['items'] = $this->getter($request, 'items-collection');
         }
 
+        $this->prepareData($this->data);
         return $this->data;
     }
 
-    protected function handleDataReplacementsRecursive(array $data): array
+    protected function prepareData(array &$data = [])
     {
-        return collect($data)->map(
-            fn ($item) => is_array($item) ? $this->prepareData(
-                item: $this->handleDataReplacementsRecursive($item),
-            ) : $item)->toArray();
+        foreach ($data as $key => &$item) {
+            is_array($item)
+                ? $this->prepareData($item)
+                : $item = $this->prefixMediaPath($key, $item);
+        }
     }
 
-    protected function prepareData(array $item): array
+    protected function prefixMediaPath(string $key, ?string $item): ?string
     {
-        return collect($item)->every(
-            fn($value) => is_string($value),
-        ) ? $this->handleReplacement($item) : $item;
-    }
+        if ($item && in_array($key, ['image_upload'])) {
+            $item = Storage::url($item);
+        }
 
-    protected function handleReplacement(array $item): array
-    {
-        //$identifier = $this->queryParams[$this->data['data']['identifier']] ?? null;
-        //dd($this->data['data']['lookup_field'], $lookupField, $this->queryParams, $item, $this->modelClassForReplacements);
-        //$model = resolve($this->modelClassForReplacements)->find($identifier);
-        //dd($model);
-        // We need to guess query the model and get the value
-        return [];
+        return $item;
     }
 }
 
