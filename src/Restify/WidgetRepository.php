@@ -2,10 +2,10 @@
 
 namespace XtendLunar\Addons\PageBuilder\Restify;
 
+use XtendLunar\Addons\PageBuilder\Models\Widget;
 use XtendLunar\Addons\PageBuilder\Restify\Presenters\WidgetPresenter;
 use XtendLunar\Addons\RestifyApi\Restify\Getters\Lunar;
 use Binaryk\LaravelRestify\Http\Requests\RestifyRequest;
-use Xtend\Extensions\Lunar\Core\Models\Widget;
 use XtendLunar\Addons\RestifyApi\Restify\Repository;
 
 class WidgetRepository extends Repository

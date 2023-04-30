@@ -3,6 +3,7 @@
 namespace XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots;
 
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -26,8 +27,8 @@ class Table extends Component implements HasTable
         return [
             TextColumn::make('id'),
             TextColumn::make('name'),
+            BadgeColumn::make('language.code'),
             TextColumn::make('description'),
-            TextColumn::make('identifier'),
             ToggleColumn::make('enabled'),
         ];
     }

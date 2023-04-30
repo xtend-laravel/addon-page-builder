@@ -6,7 +6,7 @@ use Binaryk\LaravelRestify\Fields\BelongsToMany;
 use Binaryk\LaravelRestify\Http\Requests\RestifyRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Xtend\Extensions\Lunar\Core\Models\WidgetSlot;
+use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
 use XtendLunar\Addons\PageBuilder\Restify\Presenters\WidgetSlotPresenter;
 use XtendLunar\Addons\RestifyApi\Restify\Repository;
 

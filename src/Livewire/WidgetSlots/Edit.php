@@ -2,14 +2,19 @@
 
 namespace XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots;
 
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Language;
 use XtendLunar\Addons\PageBuilder\Base\ComponentWidget;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
 use XtendLunar\Addons\PageBuilder\Models\Widget;
@@ -33,8 +38,8 @@ class Edit extends Component implements HasForms
     {
         $this->form->fill([
             'name'        => $this->widgetSlot->name,
+            'language_id' => $this->widgetSlot->language_id,
             'description' => $this->widgetSlot->description,
-            'identifier'  => $this->widgetSlot->identifier,
             'widgets'     => $this->widgetSlot->widgets->map(function (Widget $widget) {
                 return [
                     'id'   => $widget->id,
@@ -51,9 +56,24 @@ class Edit extends Component implements HasForms
     {
         return [
             TextInput::make('name'),
+            Select::make('language_id')
+                ->label(__('Language'))
+                ->options(Language::query()->pluck('name', 'id')->toArray()),
             Textarea::make('description'),
-            TextInput::make('identifier')->disabled(),
-
+            // Version A or B
+            Section::make('A/B Testing')->schema([
+                Toggle::make('enable_testing')
+                    ->reactive()
+                    ->label('Enable A/B Testing'),
+                Radio::make('version')
+                    ->inline()
+                    ->disableLabel()
+                    ->hidden(fn(\Closure $get) => !$get('enable_testing'))
+                    ->options([
+                        'A' => 'Version A',
+                        'B' => 'Version B',
+                    ]),
+            ]),
             Builder::make('widgets')
                 ->blocks([
                     Builder\Block::make(WidgetType::Advertisement->value)
@@ -80,7 +100,7 @@ class Edit extends Component implements HasForms
 
     public function submit()
     {
-        $this->widgetSlot->forceFill($this->form->getStateOnly(['description', 'identifier']))->save();
+        $this->widgetSlot->forceFill($this->form->getStateOnly(['name', 'language_id', 'description']))->save();
         $widgets = collect($this->form->getState()['widgets']);
 
         $this->removeDeletedWidgets($widgets);

@@ -2,8 +2,6 @@
 
 namespace XtendLunar\Addons\PageBuilder\Restify\Presenters;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use XtendLunar\Addons\RestifyApi\Restify\Contracts\Presentable;
 use Binaryk\LaravelRestify\Http\Requests\RestifyRequest;

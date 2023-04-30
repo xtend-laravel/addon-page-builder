@@ -11,14 +11,21 @@ use Livewire\Livewire;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table;
+use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
+use XtendLunar\Addons\PageBuilder\Policies\WidgetSlotPolicy;
 
 class PageBuilderProvider extends XtendAddonProvider
 {
     use InteractsWithRestifyRepositories;
 
+    protected $policies = [
+        WidgetSlot::class => WidgetSlotPolicy::class,
+    ];
+
     public function register()
     {
         $this->loadRoutesFrom(__DIR__ . '/../route/hub.php');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'xtend-lunar-page-builder');
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'xtend-lunar-page-builder');
         $this->loadRestifyFrom(__DIR__ . '/Restify', __NAMESPACE__ . '\\Restify\\');
