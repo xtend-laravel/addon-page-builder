@@ -10,10 +10,10 @@ use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Xtend\Extensions\Lunar\Core\Models\Widget;
-use Xtend\Extensions\Lunar\Core\Models\WidgetSlot;
 use XtendLunar\Addons\PageBuilder\Base\ComponentWidget;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
+use XtendLunar\Addons\PageBuilder\Models\Widget;
+use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
 
 class Edit extends Component implements HasForms
 {

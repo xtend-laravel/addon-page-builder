@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Blade;
 use Lunar\Hub\Facades\Menu;
 use Lunar\Hub\Menu\MenuLink;
 use Livewire\Livewire;
+use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
+use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
+use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table;
 
 class PageBuilderProvider extends XtendAddonProvider
 {
@@ -38,9 +41,10 @@ class PageBuilderProvider extends XtendAddonProvider
             });
     }
 
-    protected function registerLivewireComponents()
+    protected function registerLivewireComponents(): void
     {
-        Livewire::component('xtend-lunar-page-builder.widget-slots.table', \XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table::class);
-        Livewire::component('xtend-lunar-page-builder.widget-slots.edit', \XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit::class);
+        Livewire::component('xtend-lunar-page-builder.widget-slots.table', Table::class);
+        Livewire::component('xtend-lunar-page-builder.widget-slots.create', Create::class);
+        Livewire::component('xtend-lunar-page-builder.widget-slots.edit', Edit::class);
     }
 }

@@ -10,8 +10,7 @@ use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Livewire\Component;
-use Xtend\Extensions\Lunar\Core\Models\Widget;
-use Xtend\Extensions\Lunar\Core\Models\WidgetSlot;
+use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
 
 class Table extends Component implements HasTable
 {
