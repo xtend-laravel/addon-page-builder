@@ -16,8 +16,12 @@ class BlockNav extends ContentWidget implements Widget
     public function schema(): array
     {
         return [
+            Select::make('data.nav-direction')->options([
+                'horizontal' => 'Horizontal',
+                'vertical' => 'Vertical',
+            ])->required()->reactive(),
             Repeater::make('data.nav')
-                ->collapsed()
+                ->hidden(fn(\Closure $get): bool => empty($get('data.nav-direction')))
                 ->maxItems(6)
                 ->disableLabel()
                 ->defaultItems(1)

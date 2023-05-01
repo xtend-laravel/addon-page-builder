@@ -132,6 +132,7 @@ class Edit extends Component implements HasForms
 
     protected function createNewWidgets(Collection $widgets): void
     {
+        // @todo Positions are not correct when adding new widgets to the slot (they are added to the end of the list)
         $widgets->each(function ($widget) {
             if (!array_key_exists('id', $widget)) {
                 $prepareData = array_merge(['type' => $widget['type']], $widget['data']);
