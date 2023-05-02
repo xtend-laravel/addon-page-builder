@@ -12,6 +12,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Language;
@@ -37,7 +38,8 @@ class Edit extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'name'        => $this->widgetSlot->name,
+            'identifier'  => Str::of($this->widgetSlot->identifier)->replace('_clone', '')->value(),
+            'name'        => Str::of($this->widgetSlot->name)->replace(' (clone)', '')->value(),
             'language_id' => $this->widgetSlot->language_id,
             'description' => $this->widgetSlot->description,
             'widgets'     => $this->widgetSlot->widgets->map(function (Widget $widget) {
@@ -55,10 +57,31 @@ class Edit extends Component implements HasForms
     public function getFormSchema(): array
     {
         return [
-            TextInput::make('name'),
+            TextInput::make('identifier')
+                ->formatStateUsing(function (\Closure $get) {
+                    $slug = Str::slug($get('name'), '_');
+                    $locale = Language::findOrFail($get('language_id'));
+                    return $slug.'_'.$locale->code;
+                })
+                ->disabled()
+                ->helperText('Unique identifier for this widget slot to map to the front-end (Note this will soon be replaced by CMS page dropdown)'),
+            TextInput::make('name')
+                ->reactive()
+                ->afterStateUpdated(function (\Closure $get, \Closure $set) {
+                    $slug = Str::slug($get('name'), '_');
+                    $locale = Language::findOrFail($get('language_id'));
+                    $set('identifier', $slug.'_'.$locale->code);
+                })
+                ->required(),
             Select::make('language_id')
+                ->reactive()
                 ->label(__('Language'))
-                ->options(Language::query()->pluck('name', 'id')->toArray()),
+                ->options(Language::query()->pluck('name', 'id')->toArray())
+                ->afterStateUpdated(function (\Closure $get, \Closure $set, mixed $state) {
+                    $replaceLocale = Language::findOrFail($state);
+                    $identifier = Str::of($get('identifier'))->replace(Str::afterLast($get('identifier'), '_'), $replaceLocale->code);
+                    $set('identifier', $identifier);
+                }),
             Textarea::make('description'),
             // Version A or B
             Section::make('A/B Testing')->schema([
@@ -100,7 +123,7 @@ class Edit extends Component implements HasForms
 
     public function submit()
     {
-        $this->widgetSlot->forceFill($this->form->getStateOnly(['name', 'language_id', 'description']))->save();
+        $this->widgetSlot->forceFill($this->form->getStateOnly(['identifier', 'name', 'language_id', 'description']))->save();
         $widgets = collect($this->form->getState()['widgets']);
 
         $this->removeDeletedWidgets($widgets);
@@ -115,6 +138,7 @@ class Edit extends Component implements HasForms
             $this->widgetSlot->widgets()->updateExistingPivot($widget['id'], [
                 'slot_cols' => $widgetModel->cols,
                 'slot_rows' => $widgetModel->rows,
+                'data'      => $widgetModel->data,
             ]);
         });
 
@@ -144,6 +168,7 @@ class Edit extends Component implements HasForms
                     'slot_cols' => $widgetModel->cols,
                     'slot_rows' => $widgetModel->rows,
                     'position'  => $this->widgetSlot->widgets()->count() + 1,
+                    'data'      => $widgetModel->data,
                 ]);
             }
         });

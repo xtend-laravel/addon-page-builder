@@ -2,6 +2,9 @@
 
 namespace XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots;
 
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -37,7 +40,11 @@ class Table extends Component implements HasTable
     {
         return [
             EditAction::make()->url(fn($record) => route('hub.page-builder.widget-slots.edit', $record)),
-//            DeleteAction::make(),
+            Action::make('clone')
+                ->icon('heroicon-s-document-duplicate')
+                ->label('Clone')
+                ->url(fn($record) => route('hub.page-builder.widget-slots.clone', $record)),
+            DeleteAction::make()->requiresConfirmation(),
         ];
     }
 

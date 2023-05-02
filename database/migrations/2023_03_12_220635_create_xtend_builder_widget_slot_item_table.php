@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('slot_cols')->nullable();
             $table->integer('slot_rows')->nullable();
             $table->integer('position')->default(1)->index();
+            $table->json('data')->nullable();
             $table->timestamps();
         });
     }
