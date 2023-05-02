@@ -31,7 +31,12 @@ class WidgetSlot extends Model
             table: 'xtend_builder_widget_slot_item',
             foreignPivotKey: 'widget_slot_id',
             relatedPivotKey: 'widget_id',
-        );
+        )->withPivot([
+            'slot_cols',
+            'slot_rows',
+            'position',
+            'data',
+        ]);
     }
 
     public function language(): BelongsTo
