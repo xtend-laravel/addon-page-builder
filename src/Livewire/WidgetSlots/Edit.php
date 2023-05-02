@@ -11,6 +11,7 @@ use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -43,12 +44,15 @@ class Edit extends Component implements HasForms
             'language_id' => $this->widgetSlot->language_id,
             'description' => $this->widgetSlot->description,
             'widgets'     => $this->widgetSlot->widgets->map(function (Widget $widget) {
+                $pivotData = json_decode($widget->pivot->data, true);
+                $data = $widget->setHidden(['pivot', 'updated_at', 'created_at', 'type', 'id'])->toArray();
+                $data['data'] = $pivotData ?? $data['data'];
                 return [
                     'id'   => $widget->id,
                     'cols' => $widget->cols,
                     'rows' => $widget->rows,
                     'type' => $widget->type,
-                    'data' => $widget->setHidden(['pivot', 'updated_at', 'created_at', 'type', 'id'])->toArray(),
+                    'data' => $data,
                 ];
             })->toArray(),
         ]);
@@ -134,11 +138,11 @@ class Edit extends Component implements HasForms
             $widgetModel = $this->widgetSlot->widgets()->find($widget['id']);
             $prepareData = array_merge(['type' => $widget['type']], $widget['data']);
 
-            $widgetModel->fill($prepareData)->save();
+            $widgetModel->fill(Arr::except($prepareData, 'data'))->save();
             $this->widgetSlot->widgets()->updateExistingPivot($widget['id'], [
                 'slot_cols' => $widgetModel->cols,
                 'slot_rows' => $widgetModel->rows,
-                'data'      => $widgetModel->data,
+                'data'      => $prepareData['data'] ?? null,
             ]);
         });
 
@@ -168,7 +172,7 @@ class Edit extends Component implements HasForms
                     'slot_cols' => $widgetModel->cols,
                     'slot_rows' => $widgetModel->rows,
                     'position'  => $this->widgetSlot->widgets()->count() + 1,
-                    'data'      => $widgetModel->data,
+                    'data'      => $prepareData['data'] ?? null,
                 ]);
             }
         });
