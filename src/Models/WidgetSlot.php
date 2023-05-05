@@ -36,7 +36,7 @@ class WidgetSlot extends Model
             'slot_rows',
             'position',
             'data',
-        ]);
+        ])->orderByPivot('position');
     }
 
     public function language(): BelongsTo

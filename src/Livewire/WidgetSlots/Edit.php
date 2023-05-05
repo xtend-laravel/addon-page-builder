@@ -121,6 +121,7 @@ class Edit extends Component implements HasForms
                 ])
                 ->cloneable()
                 ->collapsible()
+                ->reorderableWithButtons()
                 //->collapsed()
         ];
     }
@@ -134,15 +135,18 @@ class Edit extends Component implements HasForms
         $this->createNewWidgets($widgets);
         $this->widgetSlot->refresh();
 
-        $widgets->filter(fn($widget) => array_key_exists('id', $widget))->each(function ($widget) {
+        $widgets->filter(fn($widget) => array_key_exists('id', $widget))->each(function ($widget, $index) {
             $widgetModel = $this->widgetSlot->widgets()->find($widget['id']);
             $prepareData = array_merge(['type' => $widget['type']], $widget['data']);
 
+            $position = $index + 1;
+            $this->widgetSlot->widgets()->where('position', '>=', $position)->increment('position');
             $widgetModel->fill(Arr::except($prepareData, 'data'))->save();
             $this->widgetSlot->widgets()->updateExistingPivot($widget['id'], [
                 'slot_cols' => $widgetModel->cols,
                 'slot_rows' => $widgetModel->rows,
                 'data'      => $prepareData['data'] ?? null,
+                'position'  => $position,
             ]);
         });
 
@@ -161,18 +165,20 @@ class Edit extends Component implements HasForms
     protected function createNewWidgets(Collection $widgets): void
     {
         // @todo Positions are not correct when adding new widgets to the slot (they are added to the end of the list)
-        $widgets->each(function ($widget) {
+        $widgets->each(function ($widget, $index) {
             if (!array_key_exists('id', $widget)) {
                 $prepareData = array_merge(['type' => $widget['type']], $widget['data']);
                 if (empty($prepareData['name']) || empty($prepareData['component'])) {
                     return;
                 }
+                $position = $index + 1;
                 $widgetModel = $this->widgetSlot->widgets()->create($prepareData);
+                $this->widgetSlot->widgets()->where('position', '>=', $position)->increment('position');
                 $this->widgetSlot->widgets()->updateExistingPivot($widgetModel->id, [
                     'slot_cols' => $widgetModel->cols,
                     'slot_rows' => $widgetModel->rows,
-                    'position'  => $this->widgetSlot->widgets()->count() + 1,
                     'data'      => $prepareData['data'] ?? null,
+                    'position'  => $position,
                 ]);
             }
         });
