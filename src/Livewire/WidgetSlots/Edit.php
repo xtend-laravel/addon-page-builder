@@ -64,8 +64,7 @@ class Edit extends Component implements HasForms
             TextInput::make('identifier')
                 ->formatStateUsing(function (\Closure $get) {
                     $slug = Str::slug($get('name'), '_');
-                    $locale = Language::findOrFail($get('language_id'));
-                    return $slug.'_'.$locale->code;
+                    return $slug;
                 })
                 ->disabled()
                 ->helperText('Unique identifier for this widget slot to map to the front-end (Note this will soon be replaced by CMS page dropdown)'),
@@ -73,19 +72,9 @@ class Edit extends Component implements HasForms
                 ->reactive()
                 ->afterStateUpdated(function (\Closure $get, \Closure $set) {
                     $slug = Str::slug($get('name'), '_');
-                    $locale = Language::findOrFail($get('language_id'));
-                    $set('identifier', $slug.'_'.$locale->code);
+                    $set('identifier', $slug);
                 })
                 ->required(),
-            Select::make('language_id')
-                ->reactive()
-                ->label(__('Language'))
-                ->options(Language::query()->pluck('name', 'id')->toArray())
-                ->afterStateUpdated(function (\Closure $get, \Closure $set, mixed $state) {
-                    $replaceLocale = Language::findOrFail($state);
-                    $identifier = Str::of($get('identifier'))->replace(Str::afterLast($get('identifier'), '_'), $replaceLocale->code);
-                    $set('identifier', $identifier);
-                }),
             Textarea::make('description'),
             // Version A or B
             Section::make('A/B Testing')->schema([

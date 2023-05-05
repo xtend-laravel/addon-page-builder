@@ -3,10 +3,10 @@
 namespace XtendLunar\Addons\PageBuilder\Components;
 
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use XtendLunar\Addons\PageBuilder\Concerns\InteractsWithMediaSettings;
 use XtendLunar\Addons\PageBuilder\Contracts\Widget;
+use XtendLunar\Addons\PageBuilder\Fields\TextArea;
+use XtendLunar\Addons\PageBuilder\Fields\TextInput;
 
 abstract class AdvertisementWidget implements Widget
 {
@@ -19,12 +19,20 @@ abstract class AdvertisementWidget implements Widget
         return [
             Fieldset::make(static::$fieldsetLabel)
                 ->schema([
-                    TextInput::make('data.title')->columnSpan(2),
-                    Textarea::make('data.description')->columnSpan(2),
+                    TextInput::make('data.title')
+                        ->multiLanguage()
+                        ->columnSpan(2),
+                    TextArea::make('data.description')
+                        ->multiLanguage()
+                        ->columnSpan(2),
                     ...$this->mediaSchema(),
-                    TextInput::make('data.cta')->label('Call to action text')->columnSpan(1),
-                    TextInput::make('data.route')->label('Url')->columnSpan(1),
-                    TextInput::make('data.placement')->hidden(),
+                    TextInput::make('data.cta')
+                        ->multiLanguage()
+                        ->label('Call to action text')
+                        ->columnSpan(1),
+                    TextInput::make('data.route')
+                        ->label('Url')
+                        ->columnSpan(1),
                 ])->columns()
         ];
     }

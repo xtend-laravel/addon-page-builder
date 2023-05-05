@@ -12,7 +12,6 @@ class WidgetSlot extends Model
     protected $table = 'xtend_builder_widget_slots';
 
     protected $fillable = [
-        'language_id',
         'name',
         'description',
         'identifier',
@@ -37,14 +36,5 @@ class WidgetSlot extends Model
             'position',
             'data',
         ])->orderByPivot('position');
-    }
-
-    public function language(): BelongsTo
-    {
-        return $this->belongsTo(
-            related: Language::class,
-            foreignKey: 'language_id',
-            ownerKey: 'id',
-        );
     }
 }
