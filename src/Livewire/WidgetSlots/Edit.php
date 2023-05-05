@@ -104,16 +104,19 @@ class Edit extends Component implements HasForms
             Builder::make('widgets')
                 ->blocks([
                     Builder\Block::make(WidgetType::Advertisement->value)
+                        ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Advertisement->value).' ('.($state['component'] ?? 'No Component Set').')')
                         ->schema([
                             ...ComponentWidget::defaultSchema(WidgetType::Advertisement),
                             ...ComponentWidget::componentSchema(WidgetType::Advertisement),
                         ])->columns(4),
                     Builder\Block::make(WidgetType::Content->value)
+                        ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Content->value).' ('.($state['component'] ?? 'No Component Set').')')
                         ->schema([
                             ...ComponentWidget::defaultSchema(WidgetType::Content),
                             ...ComponentWidget::componentSchema(WidgetType::Content),
                         ])->columns(4),
                     Builder\Block::make(WidgetType::Collection->value)
+                        ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Collection->value).' ('.($state['component'] ?? 'No Component Set').')')
                         ->schema([
                             ...ComponentWidget::defaultSchema(WidgetType::Collection),
                             ...ComponentWidget::componentSchema(WidgetType::Collection),
