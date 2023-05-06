@@ -2,14 +2,13 @@
 
 namespace XtendLunar\Addons\PageBuilder\Components\Content;
 
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Str;
 use Lunar\Models\Collection;
 use XtendLunar\Addons\PageBuilder\Components\ContentWidget;
 use XtendLunar\Addons\PageBuilder\Contracts\Widget;
+use XtendLunar\Addons\PageBuilder\Fields\TextInput;
 
 class BlockNav extends ContentWidget implements Widget
 {
@@ -28,7 +27,7 @@ class BlockNav extends ContentWidget implements Widget
                 ->itemLabel(fn (\Closure $get, array $state, Repeater $component): ?string => 'Item #')
                 ->createItemButtonLabel('Add Item')
                 ->schema([
-                    TextInput::make('name')->required(),
+                    TextInput::make('name')->translatable()->required(),
                     Select::make('route')->options(Collection::all()->flatMap(fn (Collection $collection) => [
                         $this->getRouteFromCollection($collection) => $collection->translateAttribute('name'),
                     ])->toArray())->required(),

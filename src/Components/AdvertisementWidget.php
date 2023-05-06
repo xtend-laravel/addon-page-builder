@@ -20,14 +20,14 @@ abstract class AdvertisementWidget implements Widget
             Fieldset::make(static::$fieldsetLabel)
                 ->schema([
                     TextInput::make('data.title')
-                        ->multiLanguage()
+                        ->translatable()
                         ->columnSpan(2),
                     TextArea::make('data.description')
-                        ->multiLanguage()
+                        ->translatable()
                         ->columnSpan(2),
                     ...$this->mediaSchema(),
                     TextInput::make('data.cta')
-                        ->multiLanguage()
+                        ->translatable()
                         ->label('Call to action text')
                         ->columnSpan(1),
                     TextInput::make('data.route')

@@ -11,7 +11,7 @@
     :required="$isRequired()"
     :state-path="$getStatePath()"
 >
-     @if ($getMultiLanguage())
+     @if ($getTranslatable())
         <x-hub::translatable>
             @include('xtend-lunar-page-builder::components.fields.partials.translatable-textarea-field' , ['locale' => $getDefaultLanguage()->code])
             @foreach($getLanguages()->filter(fn ($lang) => !$lang->default) as $language)

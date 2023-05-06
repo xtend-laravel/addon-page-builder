@@ -6,20 +6,20 @@ use Closure;
 use Illuminate\Support\Collection;
 use Lunar\Models\Language;
 
-trait WithMultiLanguages
+trait WithLanguages
 {
-    protected bool | Closure | null $multiLanguage = false;
+    protected bool | Closure | null $translatable = false;
 
-    public function multiLanguage(bool | Closure | null $multiLanguage = true): static
+    public function translatable(bool | Closure | null $translatable = true): static
     {
-        $this->multiLanguage = $multiLanguage;
+        $this->translatable = $translatable;
 
         return $this;
     }
 
-    public function getMultiLanguage(): bool
+    public function getTranslatable(): bool
     {
-        return $this->evaluate($this->multiLanguage);
+        return $this->evaluate($this->translatable);
     }
 
     public function getDefaultLanguage(): Language

@@ -3,8 +3,8 @@
 namespace XtendLunar\Addons\PageBuilder\Components;
 
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\TextInput;
 use XtendLunar\Addons\PageBuilder\Contracts\Widget;
+use XtendLunar\Addons\PageBuilder\Fields\TextInput;
 
 abstract class ContentWidget implements Widget
 {
@@ -13,8 +13,8 @@ abstract class ContentWidget implements Widget
         return [
             Fieldset::make('Content')
                 ->schema([
-                    TextInput::make('data.heading'),
-                    TextInput::make('data.sub_heading'),
+                    TextInput::make('data.heading')->translatable(),
+                    TextInput::make('data.sub_heading')->translatable(),
                 ]),
         ];
     }
