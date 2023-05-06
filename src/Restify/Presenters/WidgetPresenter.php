@@ -18,7 +18,7 @@ class WidgetPresenter extends PresenterResource implements Presentable
             $this->data['items'] = $this->getter($request, 'items-collection');
         }
 
-        $this->overrideDataFromPivot($request);
+        //$this->overrideDataFromPivot($request);
         $this->prepareData($this->data);
         return $this->data;
     }
@@ -48,16 +48,35 @@ class WidgetPresenter extends PresenterResource implements Presentable
     protected function prepareData(array &$data = [])
     {
         foreach ($data as $key => &$item) {
-            is_array($item)
-                ? $this->prepareData($item)
-                : $item = $this->prefixMediaPath($key, $item);
+            $item = $this->modifiers($key, $item);
+            if (is_array($item)) {
+                $this->prepareData($item);
+            }
         }
     }
 
-    protected function prefixMediaPath(string $key, ?string $item): ?string
+    protected function modifiers(string $key, mixed $item): mixed
     {
-        if ($item && in_array($key, ['image_upload'])) {
-            $item = Storage::url($item);
+        $item = $this->prefixMediaPath($key, $item);
+        $item = $this->translate($item);
+
+        return $item;
+    }
+
+    protected function prefixMediaPath(string $key, mixed $item): mixed
+    {
+        if ($item && in_array($key, ['image_upload']) && is_string($item)) {
+            $item = Storage::url(urldecode($item));
+        }
+
+        return $item;
+    }
+
+    protected function translate(mixed $item): mixed
+    {
+        if (is_array($item)) {
+            $locale = app()->getLocale() ?? 'en';
+            return $item[$locale] ?? $item;
         }
 
         return $item;
