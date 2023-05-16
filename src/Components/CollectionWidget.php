@@ -23,8 +23,11 @@ abstract class CollectionWidget implements Widget
                     Select::make('params.order')->options(['asc' => 'Ascending', 'desc' => 'Descending']),
                     TextInput::make('params.limit')->columnSpan(1),
                     Select::make('params.collection_id')
-                        ->options(Collection::all()->mapWithKeys(fn($collection) => [$collection->id => $collection->translateAttribute('name')]))
+                        ->options(Collection::all()->mapWithKeys(
+                            fn($collection) => [$collection->id => $collection->translateAttribute('name').' ('.($collection->parent?->translateAttribute('name') ?? 'Root').')'])
+                        )
                         ->label('Collection')
+                        ->multiple()
                         ->searchable(),
                 ]),
         ];
