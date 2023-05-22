@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('xtend_builder_widget_slots', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['builder', 'cms'])->default('cms');
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('identifier')->unique();

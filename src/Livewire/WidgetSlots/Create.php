@@ -31,6 +31,12 @@ class Create extends Component implements HasForms
                 ->required()
                 ->helperText('Unique identifier for this widget slot to map to the front-end (Note this will soon be replaced by CMS page dropdown)')
                 ->unique('xtend_builder_widget_slots'),
+            Select::make('type')
+                ->options([
+                    'builder' => 'Builder',
+                    'cms'     => 'CMS',
+                ])
+                ->helperText('Type of widget slot'),
             TextInput::make('name')->required(),
             Select::make('language_id')
                 ->label(__('Language'))

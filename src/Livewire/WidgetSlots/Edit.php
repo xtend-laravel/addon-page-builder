@@ -2,7 +2,9 @@
 
 namespace XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots;
 
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -16,7 +18,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Models\Language;
 use XtendLunar\Addons\PageBuilder\Base\ComponentWidget;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
 use XtendLunar\Addons\PageBuilder\Models\Widget;
@@ -40,6 +41,7 @@ class Edit extends Component implements HasForms
     {
         $this->form->fill([
             'identifier'  => Str::of($this->widgetSlot->identifier)->replace('_clone', '')->value(),
+            'type'        => $this->widgetSlot->type,
             'name'        => Str::of($this->widgetSlot->name)->replace(' (clone)', '')->value(),
             'language_id' => $this->widgetSlot->language_id,
             'description' => $this->widgetSlot->description,
@@ -68,6 +70,12 @@ class Edit extends Component implements HasForms
                 })
                 ->disabled()
                 ->helperText('Unique identifier for this widget slot to map to the front-end (Note this will soon be replaced by CMS page dropdown)'),
+            Select::make('type')
+                ->options([
+                    'builder' => 'Builder',
+                    'cms'     => 'CMS',
+                ])
+                ->helperText('Type of widget slot'),
             TextInput::make('name')
                 ->reactive()
                 ->afterStateUpdated(function (\Closure $get, \Closure $set) {
@@ -75,52 +83,70 @@ class Edit extends Component implements HasForms
                     $set('identifier', $slug);
                 })
                 ->required(),
-            Textarea::make('description'),
-            // Version A or B
-            Section::make('A/B Testing')->schema([
-                Toggle::make('enable_testing')
-                    ->reactive()
-                    ->label('Enable A/B Testing'),
-                Radio::make('version')
-                    ->inline()
-                    ->disableLabel()
-                    ->hidden(fn(\Closure $get) => !$get('enable_testing'))
-                    ->options([
-                        'A' => 'Version A',
-                        'B' => 'Version B',
-                    ]),
+            ...$this->cmsSchema(),
+            ...$this->builderSchema(),
+        ];
+    }
+
+    protected function cmsSchema(): array
+    {
+        return [
+            Card::make()->hidden(fn(\Closure $get) => $get('type') !== 'cms')->schema([
+                RichEditor::make('content'),
             ]),
-            Builder::make('widgets')
-                ->blocks([
-                    Builder\Block::make(WidgetType::Advertisement->value)
-                        ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Advertisement->value).' ('.($state['component'] ?? 'No Component Set').')')
-                        ->schema([
-                            ...ComponentWidget::defaultSchema(WidgetType::Advertisement),
-                            ...ComponentWidget::componentSchema(WidgetType::Advertisement),
-                        ])->columns(4),
-                    Builder\Block::make(WidgetType::Content->value)
-                        ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Content->value).' ('.($state['component'] ?? 'No Component Set').')')
-                        ->schema([
-                            ...ComponentWidget::defaultSchema(WidgetType::Content),
-                            ...ComponentWidget::componentSchema(WidgetType::Content),
-                        ])->columns(4),
-                    Builder\Block::make(WidgetType::Collection->value)
-                        ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Collection->value).' ('.($state['component'] ?? 'No Component Set').')')
-                        ->schema([
-                            ...ComponentWidget::defaultSchema(WidgetType::Collection),
-                            ...ComponentWidget::componentSchema(WidgetType::Collection),
-                        ])->columns(4)
-                ])
-                ->cloneable()
-                ->collapsible()
-                ->reorderableWithButtons()
-                //->collapsed()
+        ];
+    }
+
+    protected function builderSchema(): array
+    {
+        return [
+            Card::make()->hidden(fn(\Closure $get) => $get('type') !== 'builder')->schema([
+                Textarea::make('description'),
+                Section::make('A/B Testing')->schema([
+                    Toggle::make('enable_testing')
+                        ->reactive()
+                        ->label('Enable A/B Testing'),
+                    Radio::make('version')
+                        ->inline()
+                        ->disableLabel()
+                        ->hidden(fn(\Closure $get) => !$get('enable_testing'))
+                        ->options([
+                            'A' => 'Version A',
+                            'B' => 'Version B',
+                        ]),
+                ]),
+                Builder::make('widgets')
+                    ->blocks([
+                        Builder\Block::make(WidgetType::Advertisement->value)
+                            ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Advertisement->value).' ('.($state['component'] ?? 'No Component Set').')')
+                            ->schema([
+                                ...ComponentWidget::defaultSchema(WidgetType::Advertisement),
+                                ...ComponentWidget::componentSchema(WidgetType::Advertisement),
+                            ])->columns(4),
+                        Builder\Block::make(WidgetType::Content->value)
+                            ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Content->value).' ('.($state['component'] ?? 'No Component Set').')')
+                            ->schema([
+                                ...ComponentWidget::defaultSchema(WidgetType::Content),
+                                ...ComponentWidget::componentSchema(WidgetType::Content),
+                            ])->columns(4),
+                        Builder\Block::make(WidgetType::Collection->value)
+                            ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Collection->value).' ('.($state['component'] ?? 'No Component Set').')')
+                            ->schema([
+                                ...ComponentWidget::defaultSchema(WidgetType::Collection),
+                                ...ComponentWidget::componentSchema(WidgetType::Collection),
+                            ])->columns(4)
+                    ])
+                    ->cloneable()
+                    ->collapsible()
+                    ->reorderableWithButtons()
+                    //->collapsed()
+            ]),
         ];
     }
 
     public function submit()
     {
-        $this->widgetSlot->forceFill($this->form->getStateOnly(['identifier', 'name', 'language_id', 'description']))->save();
+        $this->widgetSlot->forceFill($this->form->getStateOnly(['identifier', 'type', 'name', 'language_id', 'description']))->save();
         $widgets = collect($this->form->getState()['widgets']);
 
         $this->removeDeletedWidgets($widgets);

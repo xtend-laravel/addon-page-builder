@@ -23,6 +23,7 @@ class CloneSlot extends Component
         /** @var WidgetSlot $widgetSlot */
         $this->widgetSlot = $this->widgetSlot->replicate()->fill([
             'identifier' => $this->widgetSlot->identifier.'_clone',
+            'type' => $this->widgetSlot->type,
             'name' => $this->widgetSlot->name.' (clone)',
         ]);
 

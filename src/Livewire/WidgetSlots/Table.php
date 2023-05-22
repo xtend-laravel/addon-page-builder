@@ -32,6 +32,10 @@ class Table extends Component implements HasTable
             TextColumn::make('name'),
             BadgeColumn::make('language.code'),
             TextColumn::make('description'),
+            BadgeColumn::make('type')->formatStateUsing(fn($state) => match ($state) {
+                'builder' => 'Builder',
+                'cms' => 'CMS',
+            }),
             ToggleColumn::make('enabled'),
         ];
     }
