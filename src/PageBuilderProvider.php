@@ -11,7 +11,9 @@ use Livewire\Livewire;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table;
+use XtendLunar\Addons\PageBuilder\Models\CmsPage;
 use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
+use XtendLunar\Addons\PageBuilder\Policies\CmsPagePolicy;
 use XtendLunar\Addons\PageBuilder\Policies\WidgetSlotPolicy;
 
 class PageBuilderProvider extends XtendAddonProvider
@@ -20,6 +22,7 @@ class PageBuilderProvider extends XtendAddonProvider
 
     protected $policies = [
         WidgetSlot::class => WidgetSlotPolicy::class,
+        CmsPage::class => CmsPagePolicy::class,
     ];
 
     public function register()

@@ -2,27 +2,24 @@
 
 namespace XtendLunar\Addons\PageBuilder\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class WidgetSlotItem extends Pivot
+class CmsPage extends Pivot
 {
-    protected $table = 'xtend_builder_widget_slot_item';
+    protected $table = 'xtend_builder_cms_page';
 
-    // @todo Solve the issue later with the data column can not be casts to array using Pivot
     protected $casts = [
-        'data' => 'array',
+        'heading' => AsCollection::class,
+        'content' => AsCollection::class,
     ];
 
     protected $fillable = [
-        'widget_id',
         'widget_slot_id',
-        'slot_col_start',
-        'slot_row_start',
-        'slot_cols',
-        'slot_rows',
-        'position',
-        'data',
+        'image_upload',
+        'heading',
+        'content',
     ];
 
     public function widgetSlot(): BelongsTo
