@@ -4,7 +4,6 @@ namespace XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots;
 
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -20,6 +19,7 @@ use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use XtendLunar\Addons\PageBuilder\Base\ComponentWidget;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
+use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
 use XtendLunar\Addons\PageBuilder\Models\Widget;
 use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
 
@@ -92,7 +92,7 @@ class Edit extends Component implements HasForms
     {
         return [
             Card::make()->hidden(fn(\Closure $get) => $get('type') !== 'cms')->schema([
-                RichEditor::make('content'),
+                RichEditor::make('content')->translatable(),
             ]),
         ];
     }
