@@ -5,6 +5,7 @@ namespace XtendLunar\Addons\PageBuilder\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class WidgetSlot extends Model
 {
@@ -22,9 +23,12 @@ class WidgetSlot extends Model
         'params' => 'array',
     ];
 
-    public function page(): BelongsTo
+    public function page(): HasOne
     {
-        return $this->belongsTo(CmsPage::class, 'widget_slot_id');
+        return $this->hasOne(
+            related: CmsPage::class,
+            foreignKey: 'widget_slot_id',
+        );
     }
 
     public function widgets(): BelongsToMany

@@ -3,11 +3,11 @@
 namespace XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots;
 
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -17,9 +17,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Language;
 use XtendLunar\Addons\PageBuilder\Base\ComponentWidget;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
+use XtendLunar\Addons\PageBuilder\Fields\TextInput;
 use XtendLunar\Addons\PageBuilder\Models\Widget;
 use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
 
@@ -44,6 +46,14 @@ class Edit extends Component implements HasForms
             'type'        => $this->widgetSlot->type,
             'name'        => Str::of($this->widgetSlot->name)->replace(' (clone)', '')->value(),
             'language_id' => $this->widgetSlot->language_id,
+            ...$this->mountBuilder(),
+            ...$this->mountCms(),
+        ]);
+    }
+
+    protected function mountBuilder(): array
+    {
+        return [
             'description' => $this->widgetSlot->description,
             'widgets'     => $this->widgetSlot->widgets->map(function (Widget $widget) {
                 $pivotData = json_decode($widget->pivot->data, true);
@@ -57,7 +67,22 @@ class Edit extends Component implements HasForms
                     'data' => $data,
                 ];
             })->toArray(),
-        ]);
+        ];
+    }
+
+    protected function mountCms(): array
+    {
+        /** @var \XtendLunar\Addons\PageBuilder\Models\CmsPage $page */
+        $page = $this->widgetSlot->page;
+        $content = Language::all()->mapWithKeys(fn(Language $language) => [
+            'content.' . $language->code => $page?->translate('content', $language->code),
+        ])->toArray();
+
+        return [
+            'image_upload' => $this->widgetSlot->page?->image_upload,
+            'heading' => $page?->heading,
+            ...$content,
+        ];
     }
 
     public function getFormSchema(): array
@@ -91,9 +116,25 @@ class Edit extends Component implements HasForms
     protected function cmsSchema(): array
     {
         return [
-            Card::make()->hidden(fn(\Closure $get) => $get('type') !== 'cms')->schema([
-                RichEditor::make('content')->translatable(),
-            ]),
+            Card::make()
+                ->hidden(fn(\Closure $get) => $get('type') !== 'cms')->schema([
+                    FileUpload::make('image_upload')
+                        ->visibility('private')
+                        ->directory('cms/images')
+                        ->preserveFilenames(),
+                    TextInput::make('heading')
+                        ->label('Heading')
+                        ->translatable(),
+                ]),
+            Section::make('content')
+                ->heading('Page Content')
+                ->hidden(fn(\Closure $get) => $get('type') !== 'cms')
+                ->schema([
+                    ...Language::all()->map(function (Language $language) {
+                        return RichEditor::make('content.' . $language->code)
+                            ->label($language->name);
+                    })->toArray(),
+                ]),
         ];
     }
 
@@ -147,6 +188,27 @@ class Edit extends Component implements HasForms
     public function submit()
     {
         $this->widgetSlot->forceFill($this->form->getStateOnly(['identifier', 'type', 'name', 'language_id', 'description']))->save();
+
+        $this->form->getState()['type'] === 'cms'
+            ? $this->saveCms()
+            : $this->saveBuilder();
+    }
+
+    protected function saveCms(): void
+    {
+        $this->widgetSlot->page()->updateOrCreate([
+            'widget_slot_id' => $this->widgetSlot->id,
+        ], [
+            'image_upload' => $this->form->getState()['image_upload'],
+            'heading' => $this->form->getState()['heading'],
+            'content' => $this->form->getState()['content'],
+        ]);
+
+        $this->notify($this->widgetSlot->name.' cms page updated');
+    }
+
+    protected function saveBuilder(): void
+    {
         $widgets = collect($this->form->getState()['widgets']);
 
         $this->removeDeletedWidgets($widgets);
