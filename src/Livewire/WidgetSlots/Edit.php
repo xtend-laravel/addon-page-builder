@@ -100,6 +100,7 @@ class Edit extends Component implements HasForms
                     'builder' => 'Builder',
                     'cms'     => 'CMS',
                 ])
+                ->reactive()
                 ->helperText('Type of widget slot'),
             TextInput::make('name')
                 ->reactive()

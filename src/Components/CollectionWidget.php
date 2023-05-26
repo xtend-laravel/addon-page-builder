@@ -32,7 +32,7 @@ abstract class CollectionWidget implements Widget
                     Select::make('params.collection_id')
                         ->hidden(fn(\Closure $get) => $get('params.collection.newest_auto'))
                         ->options(Collection::all()->mapWithKeys(
-                            fn($collection) => [$collection->id => $collection->translateAttribute('name')])
+                            fn($collection) => [$collection->id => $collection->translateAttribute('name').' ('.$collection->id.')'])
                         )
                         ->label('Collection')
                         ->multiple()

@@ -14,33 +14,18 @@ class WidgetPresenter extends PresenterResource implements Presentable
 {
     public function transform(RestifyRequest $request): array
     {
+        $this->overrideDataFromPivot();
+
         if ($this->data['type'] === 'Collection') {
             $this->data['items'] = $this->getter($request, 'items-collection');
         }
-
-        //$this->overrideDataFromPivot($request);
         $this->prepareData($this->data);
         return $this->data;
     }
 
-    protected function overrideDataFromPivot(RestifyRequest $request)
+    protected function overrideDataFromPivot()
     {
-        // @todo Replace this temp hack to get correct data for language
-
-        $widgetSlotIdentifier = WidgetSlot::find($this->repository->getModel()->pivot->widget_slot_id)->identifier;
-        $locale = app()->getLocale();
         $pivotData = $this->data['pivot']->data;
-        if (!str_contains($widgetSlotIdentifier, '_'.$locale)) {
-            $widgetSlot = WidgetSlot::where('identifier', Str::beforeLast($widgetSlotIdentifier, '_').'_'.$locale)->first();
-            if ($widgetSlot) {
-                $widget = $widgetSlot->widgets()->where([
-                    'widget_id' => $this->data['id'],
-                    'widget_slot_id' => $widgetSlot->id,
-                ])->first();
-                $pivotData = $widget->pivot->data;
-            }
-        }
-
         $pivotData = json_decode($pivotData, true);
         $this->data['data'] = $pivotData ?? $this->data['data'];
     }
