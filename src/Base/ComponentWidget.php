@@ -2,6 +2,7 @@
 
 namespace XtendLunar\Addons\PageBuilder\Base;
 
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -14,8 +15,6 @@ class ComponentWidget
     public static function defaultSchema(WidgetType $widgetType): array
     {
         $components = config('xtend-lunar-page-builder.components')[strtolower($widgetType->value)] ?? [];
-        $range = collect(range(1, 12))->mapWithKeys(fn ($value) => [$value => $value]);
-
         return [
             TextInput::make('name')->columnSpan(2),
             Select::make('component')->options(
@@ -23,11 +22,36 @@ class ComponentWidget
                     $widgetType->value.class_basename($component) => class_basename($component),
                 ])->toArray(),
             )->columnSpan(2)->reactive(),
-            Select::make('cols')->options($range)->default(12)->columnSpan(1),
-            Select::make('rows')->options($range)->default(1)->columnSpan(1),
-            Select::make('col_start')->options($range)->columnSpan(1),
-            Select::make('row_start')->options($range)->columnSpan(1),
+            ...static::gridSchema($widgetType),
         ];
+    }
+
+    public static function gridSchema(WidgetType $widgetType): array
+    {
+        $range = collect(range(1, 12))->mapWithKeys(fn ($value) => [$value => $value]);
+        return [
+            Fieldset::make('Grid System')
+                ->hidden(fn(\Closure $get) => static::componentWithoutGrid($get('component'), $widgetType))
+                ->columns(4)
+                ->schema([
+                    Select::make('cols')->options($range)->default(12)->columnSpan(1),
+                    Select::make('rows')->options($range)->default(1)->columnSpan(1),
+                    Select::make('col_start')->options($range)->columnSpan(1),
+                    Select::make('row_start')->options($range)->columnSpan(1),
+                ]),
+        ];
+    }
+
+    public static function componentWithoutGrid(string $componentName, WidgetType $widgetType): bool
+    {
+        $widgetNamespace = Str::of(__NAMESPACE__)->replace('Base', 'Components')->value();
+        $componentAbstract = $widgetNamespace.'\\'.$widgetType->value.'\\'.Str::of($componentName)->replace($widgetType->value, '')->value();
+
+        if (!class_exists($componentAbstract)) {
+            return false;
+        }
+
+        return $componentAbstract::$withoutGridSystem ?? false;
     }
 
     public static function componentSchema(WidgetType $widgetType): array
@@ -42,14 +66,14 @@ class ComponentWidget
             ];
     }
 
-    protected static function widgetComponentScheme(?string $componentName, WidgetType $type): array
+    protected static function widgetComponentScheme(?string $componentName, WidgetType $widgetType): array
     {
         if (!$componentName) {
             return [];
         }
 
         $widgetNamespace = Str::of(__NAMESPACE__)->replace('Base', 'Components')->value();
-        $componentAbstract = $widgetNamespace.'\\'.$type->value.'\\'.Str::of($componentName)->replace($type->value, '')->value();
+        $componentAbstract = $widgetNamespace.'\\'.$widgetType->value.'\\'.Str::of($componentName)->replace($widgetType->value, '')->value();
 
         if (!class_exists($componentAbstract)) {
             return [];

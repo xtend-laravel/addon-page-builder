@@ -23,21 +23,17 @@ abstract class CollectionWidget implements Widget
                         ->inline(false)
                         ->reactive()
                         ->columnSpanFull(),
-                    //TextInput::make('params.gallery.layout'),
-                    Card::make()->schema([
-                        Select::make('params.sort')->options(['created_at' => 'Created at', 'updated_at' => 'Updated at'])->columnSpan(1),
-                        Select::make('params.order')->options(['asc' => 'Ascending', 'desc' => 'Descending'])->columnSpan(1),
-                    ])->columnSpanFull(),
-                    TextInput::make('params.limit')->columnSpan(2),
+                    Select::make('params.sort')->options(['created_at' => 'Created at', 'updated_at' => 'Updated at'])->columnSpan(2),
+                    Select::make('params.order')->options(['asc' => 'Ascending', 'desc' => 'Descending'])->columnSpan(2),
                     Select::make('params.collection_id')
                         ->hidden(fn(\Closure $get) => $get('params.collection.newest_auto'))
                         ->options(Collection::all()->mapWithKeys(
-                            fn($collection) => [$collection->id => $collection->translateAttribute('name').' ('.$collection->id.')'])
-                        )
+                            fn($collection) => [$collection->id => $collection->translateAttribute('name').' ('.$collection->id.')'],
+                        ))
                         ->label('Collection')
                         ->multiple()
                         ->searchable()
-                        ->columnSpan(2),
+                        ->columnSpanFull(),
                 ]),
         ];
     }
