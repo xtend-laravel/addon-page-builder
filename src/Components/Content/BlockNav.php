@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Lunar\Models\Collection;
 use XtendLunar\Addons\PageBuilder\Components\ContentWidget;
 use XtendLunar\Addons\PageBuilder\Contracts\Widget;
+use XtendLunar\Addons\PageBuilder\Fields\TextArea;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
 
 class BlockNav extends ContentWidget implements Widget
@@ -19,6 +20,9 @@ class BlockNav extends ContentWidget implements Widget
                 'horizontal' => 'Horizontal',
                 'vertical' => 'Vertical',
             ])->required()->reactive(),
+            TextArea::make('data.before-content')
+                ->translatable()
+                ->columnSpan(2),
             Repeater::make('data.nav')
                 ->hidden(fn(\Closure $get): bool => empty($get('data.nav-direction')))
                 ->maxItems(6)
@@ -32,6 +36,9 @@ class BlockNav extends ContentWidget implements Widget
                         $this->getRouteFromCollection($collection) => $collection->translateAttribute('name'),
                     ])->toArray())->required(),
                 ]),
+            TextArea::make('data.after-content')
+                ->translatable()
+                ->columnSpan(2),
         ];
     }
 
