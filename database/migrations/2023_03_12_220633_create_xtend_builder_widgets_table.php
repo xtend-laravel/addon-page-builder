@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('component');
             $table->integer('col_start')->nullable();
             $table->integer('row_start')->nullable();
-            $table->integer('cols');
-            $table->integer('rows');
+            $table->integer('cols')->nullable();
+            $table->integer('rows')->nullable();
             $table->json('data')->nullable();
             $table->json('params')->nullable();
             $table->boolean('enabled')->default(true);

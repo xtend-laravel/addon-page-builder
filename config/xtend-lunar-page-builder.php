@@ -11,6 +11,7 @@ return [
             Advertisement\FeaturedOverlay::class,
             Advertisement\FeaturedSlider::class,
             Advertisement\Spotlight::class,
+            Advertisement\SocialFeed::class,
         ],
         'collection' => [
             Collection\FeaturedCarousel::class,

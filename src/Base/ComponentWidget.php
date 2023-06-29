@@ -42,7 +42,7 @@ class ComponentWidget
         ];
     }
 
-    public static function componentWithoutGrid(string $componentName, WidgetType $widgetType): bool
+    public static function componentWithoutGrid(?string $componentName, WidgetType $widgetType): bool
     {
         $widgetNamespace = Str::of(__NAMESPACE__)->replace('Base', 'Components')->value();
         $componentAbstract = $widgetNamespace.'\\'.$widgetType->value.'\\'.Str::of($componentName)->replace($widgetType->value, '')->value();
