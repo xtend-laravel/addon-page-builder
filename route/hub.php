@@ -7,7 +7,7 @@ use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\CloneSlot;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 
-Route::prefix(config('lunar-hub.system.path', 'hub'))
+Route::prefix(config('lunar-hub.system.path'))
     ->middleware(['web', Authenticate::class, 'can:settings:core'])
     ->group(function () {
         Route::get('/page-builder', PageBuilderIndex::class)->name('hub.page-builder.index');
