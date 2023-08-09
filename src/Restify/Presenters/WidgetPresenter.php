@@ -4,6 +4,8 @@ namespace XtendLunar\Addons\PageBuilder\Restify\Presenters;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Lunar\Models\CollectionGroup;
+use Xtend\Extensions\Lunar\Core\Models\Collection;
 use XtendLunar\Addons\PageBuilder\Models\Widget;
 use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
 use XtendLunar\Addons\RestifyApi\Restify\Contracts\Presentable;
@@ -20,6 +22,19 @@ class WidgetPresenter extends PresenterResource implements Presentable
             $this->data['items'] = $this->getter($request, 'items-collection');
         }
         $this->prepareData($this->data);
+
+        if ($this->data['component'] === 'ContentBlockNav') {
+            $collectionGroup = CollectionGroup::find($this->data['data']['collection_group_id']);
+            if ($collectionGroup) {
+                $this->data['data']['collections'] = $collectionGroup->collections->map(function (Collection $collection) {
+                    return [
+                        'id' => $collection->id,
+                        'name' => $collection->translateAttribute('name') ?? null,
+                    ];
+                });
+            }
+        }
+
         return $this->data;
     }
 
