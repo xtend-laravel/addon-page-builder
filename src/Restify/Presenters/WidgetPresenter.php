@@ -30,6 +30,7 @@ class WidgetPresenter extends PresenterResource implements Presentable
                     return [
                         'id' => $collection->id,
                         'name' => $collection->translateAttribute('name') ?? null,
+                        'slug' => $collection->id.'-'.Str::slug($collection->translateAttribute('name')),
                     ];
                 });
             }
