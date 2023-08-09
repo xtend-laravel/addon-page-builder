@@ -6,6 +6,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Str;
 use Lunar\Models\Collection;
+use Lunar\Models\CollectionGroup;
 use XtendLunar\Addons\PageBuilder\Components\ContentWidget;
 use XtendLunar\Addons\PageBuilder\Contracts\Widget;
 use XtendLunar\Addons\PageBuilder\Fields\TextArea;
@@ -23,8 +24,15 @@ class BlockNav extends ContentWidget implements Widget
             TextArea::make('data.before-content')
                 ->translatable()
                 ->columnSpan(2),
+            Select::make('data.collection_group_id')
+                ->options(CollectionGroup::all()->mapWithKeys(
+                    fn($collectionGroup) => [$collectionGroup->id => $collectionGroup->name],
+                ))
+                ->label('Collection Group')
+                ->columnSpanFull()
+                ->reactive(),
             Repeater::make('data.nav')
-                ->hidden(fn(\Closure $get): bool => empty($get('data.nav-direction')))
+                ->hidden(fn(\Closure $get): bool => empty($get('data.nav-direction')) || $get('data.collection_group_id') > 0)
                 ->maxItems(6)
                 ->disableLabel()
                 ->defaultItems(1)
@@ -35,7 +43,7 @@ class BlockNav extends ContentWidget implements Widget
                     Select::make('route')->options(Collection::all()->flatMap(fn (Collection $collection) => [
                         $this->getRouteFromCollection($collection) => $collection->translateAttribute('name'),
                     ])->toArray())->required(),
-                ]),
+                ])->columnSpanFull(),
             TextArea::make('data.after-content')
                 ->translatable()
                 ->columnSpan(2),
