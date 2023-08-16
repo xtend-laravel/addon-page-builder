@@ -265,7 +265,8 @@ class Edit extends Component implements HasForms
         $widgets->each(function ($widget, $index) {
             if (!array_key_exists('id', $widget)) {
                 $prepareData = array_merge(['type' => $widget['type']], $widget['data']);
-                if (empty($prepareData['name']) || empty($prepareData['component'])) {
+                $prepareData['name'] ??= $prepareData['component'];
+                if (empty($prepareData['component'])) {
                     return;
                 }
                 $position = $index + 1;

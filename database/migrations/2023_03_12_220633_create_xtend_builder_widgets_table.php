@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('xtend_builder_widgets', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['Advertisement', 'Content', 'Collection'])->default('Advertisement');
+            $table->enum('type', ['Advertisement', 'Content', 'Collection', 'Form'])->default('Advertisement');
             $table->string('name');
             $table->string('component');
             $table->integer('col_start')->nullable();
