@@ -160,22 +160,28 @@ class Edit extends Component implements HasForms
                 Builder::make('widgets')
                     ->blocks([
                         Builder\Block::make(WidgetType::Advertisement->value)
-                            ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Advertisement->value).' ('.($state['component'] ?? 'No Component Set').')')
+                            ->label(fn(\Closure $get, $state) => $this->setWidgetLabel(WidgetType::Advertisement, $state))
                             ->schema([
                                 ...ComponentWidget::defaultSchema(WidgetType::Advertisement),
                                 ...ComponentWidget::componentSchema(WidgetType::Advertisement),
                             ])->columns(4),
                         Builder\Block::make(WidgetType::Content->value)
-                            ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Content->value).' ('.($state['component'] ?? 'No Component Set').')')
+                            ->label(fn(\Closure $get, $state) => $this->setWidgetLabel(WidgetType::Content, $state))
                             ->schema([
                                 ...ComponentWidget::defaultSchema(WidgetType::Content),
                                 ...ComponentWidget::componentSchema(WidgetType::Content),
                             ])->columns(4),
                         Builder\Block::make(WidgetType::Collection->value)
-                            ->label(fn(\Closure $get, $state) => ($state['name'] ?? WidgetType::Collection->value).' ('.($state['component'] ?? 'No Component Set').')')
+                            ->label(fn(\Closure $get, $state) => $this->setWidgetLabel(WidgetType::Collection, $state))
                             ->schema([
                                 ...ComponentWidget::defaultSchema(WidgetType::Collection),
                                 ...ComponentWidget::componentSchema(WidgetType::Collection),
+                            ])->columns(4),
+                        Builder\Block::make(WidgetType::Form->value)
+                            ->label(fn(\Closure $get, $state) => $this->setWidgetLabel(WidgetType::Form, $state))
+                            ->schema([
+                                ...ComponentWidget::defaultSchema(WidgetType::Form),
+                                ...ComponentWidget::componentSchema(WidgetType::Form),
                             ])->columns(4)
                     ])
                     ->cloneable()
@@ -184,6 +190,16 @@ class Edit extends Component implements HasForms
                     //->collapsed()
             ]),
         ];
+    }
+
+    protected function setWidgetLabel(WidgetType $widgetType, array $state): string
+    {
+        $label = $state['name'] ?? $widgetType->value;
+        $component = $state['component'] ?? null;
+        if ($component) {
+            $label .= ' ('.$component.')';
+        }
+        return $label;
     }
 
     public function submit()
