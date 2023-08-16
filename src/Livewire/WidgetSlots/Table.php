@@ -30,7 +30,6 @@ class Table extends Component implements HasTable
         return [
             TextColumn::make('id'),
             TextColumn::make('name'),
-            BadgeColumn::make('language.code'),
             TextColumn::make('description'),
             BadgeColumn::make('type')->formatStateUsing(fn($state) => match ($state) {
                 'builder' => 'Builder',
@@ -45,6 +44,7 @@ class Table extends Component implements HasTable
         return [
             EditAction::make()->url(fn($record) => route('hub.page-builder.widget-slots.edit', $record)),
             Action::make('clone')
+                ->hidden(fn($record) => $record->type !== 'builder')
                 ->icon('heroicon-s-document-duplicate')
                 ->label('Clone')
                 ->url(fn($record) => route('hub.page-builder.widget-slots.clone', $record)),
