@@ -17,12 +17,14 @@ class ComponentWidget
         $components = config('xtend-lunar-page-builder.components')[strtolower($widgetType->value)] ?? [];
         return [
             TextInput::make('name')->columnSpan(2),
-            Select::make('component')->options(
+            Select::make('component')
+                ->label($widgetType->value . ' Component')
+                ->options(
                 collect($components)->flatMap(fn ($component) => [
                     $widgetType->value.class_basename($component) => class_basename($component),
                 ])->toArray(),
-            )->columnSpan(2)->reactive(),
-            ...static::gridSchema($widgetType),
+            )->columnSpan(2)->required()->reactive(),
+                ...static::gridSchema($widgetType),
         ];
     }
 
