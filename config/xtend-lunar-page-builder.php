@@ -3,6 +3,7 @@
 use XtendLunar\Addons\PageBuilder\Components\Advertisement;
 use XtendLunar\Addons\PageBuilder\Components\Collection;
 use XtendLunar\Addons\PageBuilder\Components\Content;
+use XtendLunar\Addons\PageBuilder\Components\Form;
 
 return [
     'components' => [
@@ -20,6 +21,13 @@ return [
         'content' => [
             Content\BlockNav::class,
             Content\Heading::class,
+            Content\Faqs::class,
+        ],
+        'form' => [
+            Form\Contact::class,
+            Form\Register::class,
+            Form\Login::class,
+            Form\Newsletter::class,
         ],
     ]
 ];
