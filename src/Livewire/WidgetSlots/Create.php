@@ -38,9 +38,6 @@ class Create extends Component implements HasForms
                 ])
                 ->helperText('Type of widget slot'),
             TextInput::make('name')->required(),
-            Select::make('language_id')
-                ->label(__('Language'))
-                ->options(Language::query()->pluck('name', 'id')->toArray()),
             Textarea::make('description'),
         ];
     }
@@ -50,6 +47,8 @@ class Create extends Component implements HasForms
         $widgetSlot = WidgetSlot::create($this->form->getState());
 
         $this->notify($widgetSlot->name.' widget slot created');
+
+        $this->redirect(route('hub.page-builder.widget-slots.edit', ['widgetSlot' => $widgetSlot->id]));
     }
 
     public function render()
