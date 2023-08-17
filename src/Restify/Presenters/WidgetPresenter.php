@@ -24,7 +24,7 @@ class WidgetPresenter extends PresenterResource implements Presentable
         $this->prepareData($this->data);
 
         if ($this->data['component'] === 'ContentBlockNav') {
-            $collectionGroup = CollectionGroup::find($this->data['data']['collection_group_id']);
+            $collectionGroup = CollectionGroup::find($this->data['data']['collection_group_id'] ?? 0);
             if ($collectionGroup) {
                 $this->data['data']['collections'] = $collectionGroup->collections->map(function (Collection $collection) {
                     return [
