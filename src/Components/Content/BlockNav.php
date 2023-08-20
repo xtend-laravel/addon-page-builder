@@ -9,6 +9,7 @@ use Lunar\Models\Collection;
 use Lunar\Models\CollectionGroup;
 use XtendLunar\Addons\PageBuilder\Components\ContentWidget;
 use XtendLunar\Addons\PageBuilder\Contracts\Widget;
+use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
 use XtendLunar\Addons\PageBuilder\Fields\TextArea;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
 
@@ -21,7 +22,7 @@ class BlockNav extends ContentWidget implements Widget
                 'horizontal' => 'Horizontal',
                 'vertical' => 'Vertical',
             ])->required()->reactive(),
-            TextArea::make('data.before-content')
+            RichEditor::make('data.before-content')
                 ->translatable()
                 ->columnSpan(2),
             Select::make('data.collection_group_id')
@@ -44,7 +45,7 @@ class BlockNav extends ContentWidget implements Widget
                         $this->getRouteFromCollection($collection) => $collection->translateAttribute('name'),
                     ])->toArray())->required(),
                 ])->columnSpanFull(),
-            TextArea::make('data.after-content')
+            RichEditor::make('data.after-content')
                 ->translatable()
                 ->columnSpan(2),
         ];
