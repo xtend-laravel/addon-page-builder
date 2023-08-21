@@ -10,7 +10,13 @@ class CmsPagePresenter extends PresenterResource implements Presentable
 {
     public function transform(RestifyRequest $request): array
     {
-        return $this->data;
+        return [
+            'id' => $this->data['id'],
+            'widget_slot_id' => $this->data['widget_slot_id'],
+            'image_upload' => $this->data['image_upload'],
+            'heading' => $this->repository->model()->translate('heading'),
+            'content' => $this->repository->model()->translate('content')
+        ];
     }
 }
 
