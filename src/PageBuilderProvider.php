@@ -5,6 +5,7 @@ namespace XtendLunar\Addons\PageBuilder;
 use Binaryk\LaravelRestify\Traits\InteractsWithRestifyRepositories;
 use CodeLabX\XtendLaravel\Base\XtendAddonProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Lunar\Hub\Facades\Menu;
 use Lunar\Hub\Menu\MenuLink;
 use Livewire\Livewire;
@@ -12,6 +13,7 @@ use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table;
 use XtendLunar\Addons\PageBuilder\Models\CmsPage;
+use XtendLunar\Addons\PageBuilder\Models\Form;
 use XtendLunar\Addons\PageBuilder\Models\FormSubmission;
 use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
 use XtendLunar\Addons\PageBuilder\Policies\CmsPagePolicy;
@@ -44,6 +46,7 @@ class PageBuilderProvider extends XtendAddonProvider
 
     public function boot()
     {
+        $this->registerPolicies();
         Blade::componentNamespace('XtendLunar\\Addons\\PageBuilder\\Components', 'xtend-lunar-page-builder');
 
         Menu::slot('sidebar')
@@ -61,5 +64,12 @@ class PageBuilderProvider extends XtendAddonProvider
         Livewire::component('xtend-lunar-page-builder.widget-slots.table', Table::class);
         Livewire::component('xtend-lunar-page-builder.widget-slots.create', Create::class);
         Livewire::component('xtend-lunar-page-builder.widget-slots.edit', Edit::class);
+    }
+
+    protected function registerPolicies()
+    {
+        foreach ($this->policies as $model => $policy) {
+            Gate::policy($model, $policy);
+        }
     }
 }
