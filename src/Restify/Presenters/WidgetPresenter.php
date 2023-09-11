@@ -19,7 +19,7 @@ class WidgetPresenter extends PresenterResource implements Presentable
         $this->overrideDataFromPivot();
 
         if ($this->data['type'] === 'Collection') {
-            $this->data['items'] = $this->getter($request, 'items-collection');
+            $this->data['items'] ??= $this->getter($request, 'items-collection');
         }
         $this->prepareData($this->data);
 
@@ -41,6 +41,10 @@ class WidgetPresenter extends PresenterResource implements Presentable
 
     protected function overrideDataFromPivot()
     {
+        if (!isset($this->data['pivot'])) {
+            return;
+        }
+
         $pivotData = $this->data['pivot']->data;
         $pivotData = json_decode($pivotData, true);
         $this->data['data'] = $pivotData ?? $this->data['data'];
