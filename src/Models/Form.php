@@ -3,7 +3,7 @@
 namespace XtendLunar\Addons\PageBuilder\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Form extends Model
 {
@@ -20,15 +20,8 @@ class Form extends Model
         'validation',
     ];
 
-    public function submissions(): BelongsToMany
+    public function submissions(): HasMany
     {
-        return $this->belongsToMany(
-            related: FormSubmission::class,
-            table: 'xtend_builder_form_submission',
-            foreignPivotKey: 'form_id',
-            relatedPivotKey: 'form_submission_id',
-        )->withPivot([
-            'payload',
-        ])->withTimestamps();
+        return $this->hasMany(FormSubmission::class);
     }
 }
