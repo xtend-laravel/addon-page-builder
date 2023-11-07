@@ -2,15 +2,13 @@
 
 namespace XtendLunar\Addons\PageBuilder\Restify;
 
-use Binaryk\LaravelRestify\Http\Requests\RepositoryStoreRequest;
 use Binaryk\LaravelRestify\Http\Requests\RestifyRequest;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Notification;
 use XtendLunar\Addons\PageBuilder\Models\FormSubmission;
+use XtendLunar\Addons\PageBuilder\Notifications\FormSubmissionAdminNotification;
 use XtendLunar\Addons\PageBuilder\Restify\Presenters\FormSubmissionPresenter;
+use XtendLunar\Addons\RestifyApi\Notifications\OrderCompletedAdminNotification;
 use XtendLunar\Addons\RestifyApi\Restify\Repository;
 
 class FormSubmissionRepository extends Repository
@@ -27,5 +25,16 @@ class FormSubmissionRepository extends Repository
         // dd(Gate::check('store', static::$model));
 
         return true;
+    }
+
+    public function store(RestifyRequest $request)
+    {
+        $formSubmission = parent::store($request);
+
+        /* @var FormSubmission $this */
+        Notification::route('mail', config('mail.from.address'))
+            ->notify(new FormSubmissionAdminNotification($this->resource));
+
+        return $formSubmission;
     }
 }
