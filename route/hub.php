@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Middleware\Authenticate;
 use XtendLunar\Addons\PageBuilder\Livewire\Pages\PageBuilderIndex;
+use XtendLunar\Addons\PageBuilder\Livewire\Posts\CreatePost;
+use XtendLunar\Addons\PageBuilder\Livewire\Posts\ListPosts;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\CloneSlot;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
@@ -21,7 +23,8 @@ Route::prefix(config('lunar-hub.system.path'))
         /**
          * Post routes
          */
-        Route::get('/posts', fn() => 'post')->name('hub.content.posts.index');
+        Route::get('/posts', ListPosts::class)->name('hub.content.posts.index');
+        Route::get('/posts/create', CreatePost::class)->name('hub.content.posts.create');
 
         /**
          * Category routes
