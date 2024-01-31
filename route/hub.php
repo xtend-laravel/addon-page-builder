@@ -10,8 +10,21 @@ use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 Route::prefix(config('lunar-hub.system.path'))
     ->middleware(['web', Authenticate::class, 'can:settings:core'])
     ->group(function () {
+        /**
+         * Page routes
+         */
         Route::get('/page-builder', PageBuilderIndex::class)->name('hub.page-builder.index');
         Route::get('/page-builder/widget-slots/create', Create::class)->name('hub.page-builder.widget-slots.create');
         Route::get('/page-builder/widget-slots/{widgetSlot}/edit', Edit::class)->name('hub.page-builder.widget-slots.edit');
         Route::get('/page-builder/widget-slots/{widgetSlot}/clone', CloneSlot::class)->name('hub.page-builder.widget-slots.clone');
+
+        /**
+         * Post routes
+         */
+        Route::get('/posts', fn() => 'post')->name('hub.content.posts.index');
+
+        /**
+         * Category routes
+         */
+        Route::get('/categories', fn() => 'category')->name('hub.content.categories.index');
     });

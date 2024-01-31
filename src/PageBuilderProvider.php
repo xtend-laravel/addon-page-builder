@@ -49,14 +49,37 @@ class PageBuilderProvider extends XtendAddonProvider
         $this->registerPolicies();
         Blade::componentNamespace('XtendLunar\\Addons\\PageBuilder\\Components', 'xtend-lunar-page-builder');
 
+//        Menu::slot('sidebar')
+//            ->group('hub.configure')
+//            ->addItem(function (MenuLink $item) {
+//                return $item->name('Page builder')
+//                    ->handle('hub.page-builder')
+//                    ->route('hub.page-builder.index')
+//                    ->icon('cube');
+//            });
+
         Menu::slot('sidebar')
-            ->group('hub.configure')
+            ->group('hub.content')
+            ->name('Content')
             ->addItem(function (MenuLink $item) {
-                return $item->name('Page builder')
+                return $item->name(__('Pages'))
                     ->handle('hub.page-builder')
                     ->route('hub.page-builder.index')
                     ->icon('cube');
-            });
+            })
+            ->addItem(function (MenuLink $item) {
+                return $item->name(__('Posts'))
+                    ->handle('hub.content.posts')
+                    ->route('hub.content.posts.index')
+                    ->icon('document-text');
+            })
+            ->addItem(function (MenuLink $item) {
+                return $item->name(__('Categories'))
+                    ->handle('hub.content.categories')
+                    ->route('hub.content.categories.index')
+                    ->icon('collection');
+            })
+        ;
     }
 
     protected function registerLivewireComponents(): void
