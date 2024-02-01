@@ -10,7 +10,7 @@ use Lunar\Hub\Facades\Menu;
 use Lunar\Hub\Menu\MenuLink;
 use Livewire\Livewire;
 use XtendLunar\Addons\PageBuilder\Livewire\Categories\CategoryForm;
-use XtendLunar\Addons\PageBuilder\Livewire\Posts\CreatePost;
+use XtendLunar\Addons\PageBuilder\Livewire\Posts\PostForm;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table;
@@ -90,7 +90,7 @@ class PageBuilderProvider extends XtendAddonProvider
         Livewire::component('xtend-lunar-page-builder.widget-slots.create', Create::class);
         Livewire::component('xtend-lunar-page-builder.widget-slots.edit', Edit::class);
 
-        Livewire::component('xtend-lunar-page-builder.posts.create-post', CreatePost::class);
+        Livewire::component('xtend-lunar-page-builder.posts.create-post', PostForm::class);
 
         Livewire::component('xtend-lunar-page-builder.categories.form', CategoryForm::class);
     }

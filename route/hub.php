@@ -6,7 +6,7 @@ use XtendLunar\Addons\PageBuilder\Livewire\Categories\CategoryForm;
 use XtendLunar\Addons\PageBuilder\Livewire\Categories\EditCategory;
 use XtendLunar\Addons\PageBuilder\Livewire\Categories\ListCategories;
 use XtendLunar\Addons\PageBuilder\Livewire\Pages\PageBuilderIndex;
-use XtendLunar\Addons\PageBuilder\Livewire\Posts\CreatePost;
+use XtendLunar\Addons\PageBuilder\Livewire\Posts\PostForm;
 use XtendLunar\Addons\PageBuilder\Livewire\Posts\ListPosts;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\CloneSlot;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
@@ -27,7 +27,7 @@ Route::prefix(config('lunar-hub.system.path'))
          * Post routes
          */
         Route::get('/posts', ListPosts::class)->name('hub.content.posts.index');
-        Route::get('/posts/create', CreatePost::class)->name('hub.content.posts.create');
+        Route::get('/posts/create', PostForm::class)->name('hub.content.posts.create');
 
         /**
          * Category routes

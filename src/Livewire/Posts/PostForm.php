@@ -8,20 +8,30 @@ use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Stephenjude\FilamentBlog\Models\Post;
-use Stephenjude\FilamentBlog\Resources\PostResource;
 use Filament\Forms;
 use Stephenjude\FilamentBlog\Traits\HasContentEditor;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
 
-class CreatePost extends Component implements HasForms
+class PostForm extends Component implements HasForms
 {
     use InteractsWithForms;
     use HasContentEditor;
+    use Notifies;
 
-    public $data;
+    public Post $post;
 
-    protected function getFormStatePath(): ?string
+    public function mount($post = null)
     {
-        return 'data';
+        $this->post = $post ?? new Post;
+
+        $this->form->fill([
+
+        ]);
+    }
+
+    protected function getFormModel()
+    {
+        return $this->post;
     }
 
     protected function getFormSchema(): array
@@ -30,19 +40,16 @@ class CreatePost extends Component implements HasForms
             Forms\Components\Card::make()
                 ->schema([
                     Forms\Components\TextInput::make('title')
-                        ->label(__('Title'))
                         ->required()
                         ->reactive()
-                        ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
+                        ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
 
                     Forms\Components\TextInput::make('slug')
-                        ->label(__('Slug'))
                         ->disabled()
                         ->required()
-                        ->unique(Post::class, 'slug', fn ($record) => $record),
+                        ->unique(Post::class, 'slug', fn($record) => $record),
 
                     Forms\Components\Textarea::make('excerpt')
-                        ->label(__('Excerpt'))
                         ->rows(2)
                         ->minLength(50)
                         ->maxLength(1000)
@@ -63,47 +70,41 @@ class CreatePost extends Component implements HasForms
 
                     self::getContentEditor('content'),
 
-//                    Forms\Components\Select::make('blog_author_id')
-//                        ->label(__('filament-blog::filament-blog.author'))
-//                        ->relationship('author', 'name')
-//                        ->required(),
-
                     Forms\Components\Select::make('blog_category_id')
                         ->label(__('filament-blog::filament-blog.category'))
-//                        ->relationship('category', 'name')
+                        ->relationship('category', 'name')
                         ->required(),
 
                     Forms\Components\DatePicker::make('published_at')
                         ->label(__('filament-blog::filament-blog.published_date')),
                     SpatieTagsInput::make('tags')
-                        ->label(__('filament-blog::filament-blog.tags'))
-                        ->required(),
+                        ->label(__('filament-blog::filament-blog.tags')),
                 ])
                 ->columns([
                     'sm' => 2,
                 ])
                 ->columnSpan(2),
-            Forms\Components\Card::make()
-                ->schema([
-                    Forms\Components\Placeholder::make('created_at')
-                        ->label(__('filament-blog::filament-blog.created_at'))
-                        ->content(fn (
-                            ?Post $record
-                        ): string => $record ? $record->created_at->diffForHumans() : '-'),
-                    Forms\Components\Placeholder::make('updated_at')
-                        ->label(__('filament-blog::filament-blog.last_modified_at'))
-                        ->content(fn (
-                            ?Post $record
-                        ): string => $record ? $record->updated_at->diffForHumans() : '-'),
-                ])
-                ->columnSpan(1),
         ];
+    }
+
+    public function submit()
+    {
+        $state = $this->form->getState();
+
+        $this->post->fill($state)->save();
+
+        if ($this->post->wasRecentlyCreated) {
+            $this->notify($state['title'] . ' post created');
+
+            $this->redirect(route('hub.content.posts.edit', $this->post));
+        } else {
+            $this->notify($state['title'] . ' post updated');
+        }
     }
 
     public function render()
     {
-        return view('xtend-lunar-page-builder::livewire.posts.create')
-            ->layout('adminhub::layouts.app')
-            ;
+        return view('xtend-lunar-page-builder::livewire.posts.form')
+            ->layout('adminhub::layouts.app');
     }
 }

@@ -66,11 +66,12 @@ class CategoryForm extends Component implements HasForms
 
         if ($this->category->wasRecentlyCreated) {
             $this->notify($state['name'] . ' category created');
+
+            $this->redirect(route('hub.content.categories.edit', $this->category));
         } else {
             $this->notify($state['name'] . ' category updated');
         }
 
-        $this->redirect(route('hub.content.categories.index'));
     }
 
 
