@@ -30,6 +30,7 @@ class ListPosts extends Component implements HasTable
             Tables\Columns\TextColumn::make('category.name')
                 ->searchable()
                 ->sortable(),
+            Tables\Columns\SpatieTagsColumn::make('tags'),
             Tables\Columns\TextColumn::make('published_at')
                 ->date()
                 ->sortable(),
