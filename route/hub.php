@@ -28,6 +28,7 @@ Route::prefix(config('lunar-hub.system.path'))
          */
         Route::get('/posts', ListPosts::class)->name('hub.content.posts.index');
         Route::get('/posts/create', PostForm::class)->name('hub.content.posts.create');
+        Route::get('/posts/{post}/edit', PostForm::class)->name('hub.content.posts.edit');
 
         /**
          * Category routes

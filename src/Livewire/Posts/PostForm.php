@@ -25,7 +25,14 @@ class PostForm extends Component implements HasForms
         $this->post = $post ?? new Post;
 
         $this->form->fill([
-
+            'title'          => $this->post->title,
+            'slug'           => $this->post->slug,
+            'excerpt'        => $this->post->excerpt,
+            'content'        => $this->post->content,
+            'banner'         => $this->post->banner,
+            'blog_category_id' => $this->post->blog_category_id,
+            'published_at'   => $this->post->published_at,
+            'tags'           => $this->post->tags->pluck('name')->toArray(),
         ]);
     }
 
