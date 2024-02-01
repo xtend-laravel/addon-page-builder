@@ -11,7 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
-use Stephenjude\FilamentBlog\Models\Category;
+use XtendLunar\Addons\PageBuilder\Models\CmsCategory as Category;
 
 class ListCategories extends Component implements HasTable
 {

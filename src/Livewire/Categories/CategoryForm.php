@@ -6,10 +6,11 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use Stephenjude\FilamentBlog\Models\Category;
 use Filament\Forms;
 use Stephenjude\FilamentBlog\Traits\HasContentEditor;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
+use XtendLunar\Addons\PageBuilder\Models\CmsCategory as Category;
 
 class CategoryForm extends Component implements HasForms
 {
@@ -27,7 +28,7 @@ class CategoryForm extends Component implements HasForms
             'name'        => $this->category->name,
             'slug'        => $this->category->slug,
             'description' => $this->category->description,
-            'is_visible'  => $this->category->is_visible,
+            'is_visible'  => $this->category->is_visible ?? true,
             'created_at'  => $this->category->created_at,
             'updated_at'  => $this->category->updated_at,
         ]);
@@ -45,9 +46,11 @@ class CategoryForm extends Component implements HasForms
                     Forms\Components\TextInput::make('slug')
                         ->disabled()
                         ->required()
-//                        ->unique(Category::class, 'slug', ignorable: $this->category)
+                        ->unique(Category::class, 'slug', ignorable: $this->category)
                     ,
-                    self::getContentEditor('description'),
+                    RichEditor::make('description')
+                        ->disableToolbarButtons(['attachFiles'])
+                        ->columnSpan(2),
                     Forms\Components\Toggle::make('is_visible')
                         ->default(true),
                 ])
