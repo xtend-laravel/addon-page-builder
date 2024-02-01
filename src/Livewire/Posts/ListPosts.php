@@ -24,9 +24,9 @@ class ListPosts extends Component implements HasTable
             Tables\Columns\TextColumn::make('title')
                 ->searchable()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('author.name')
-                ->searchable()
-                ->sortable(),
+//            Tables\Columns\TextColumn::make('author.name')
+//                ->searchable()
+//                ->sortable(),
             Tables\Columns\TextColumn::make('category.name')
                 ->searchable()
                 ->sortable(),
