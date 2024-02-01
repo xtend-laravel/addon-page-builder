@@ -20,23 +20,17 @@ class ListPosts extends Component implements HasTable
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\ImageColumn::make('banner')
-                ->label(__('filament-blog::filament-blog.banner'))
-                ->rounded(),
+            Tables\Columns\ImageColumn::make('banner'),
             Tables\Columns\TextColumn::make('title')
-                ->label(__('filament-blog::filament-blog.title'))
                 ->searchable()
                 ->sortable(),
             Tables\Columns\TextColumn::make('author.name')
-                ->label(__('filament-blog::filament-blog.author_name'))
                 ->searchable()
                 ->sortable(),
             Tables\Columns\TextColumn::make('category.name')
-                ->label(__('filament-blog::filament-blog.category_name'))
                 ->searchable()
                 ->sortable(),
             Tables\Columns\TextColumn::make('published_at')
-                ->label(__('filament-blog::filament-blog.published_at'))
                 ->date()
                 ->sortable(),
         ];
