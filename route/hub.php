@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Middleware\Authenticate;
+use XtendLunar\Addons\PageBuilder\Livewire\Categories\CreateCategory;
+use XtendLunar\Addons\PageBuilder\Livewire\Categories\ListCategories;
 use XtendLunar\Addons\PageBuilder\Livewire\Pages\PageBuilderIndex;
 use XtendLunar\Addons\PageBuilder\Livewire\Posts\CreatePost;
 use XtendLunar\Addons\PageBuilder\Livewire\Posts\ListPosts;
@@ -29,5 +31,6 @@ Route::prefix(config('lunar-hub.system.path'))
         /**
          * Category routes
          */
-        Route::get('/categories', fn() => 'category')->name('hub.content.categories.index');
+        Route::get('/categories', ListCategories::class)->name('hub.content.categories.index');
+        Route::get('/categories/create', CreateCategory::class)->name('hub.content.categories.create');
     });

@@ -24,7 +24,7 @@ class CreatePost extends Component implements HasForms
         return 'data';
     }
 
-    protected function getFormSchema()
+    protected function getFormSchema(): array
     {
         return [
             Forms\Components\Card::make()
@@ -36,13 +36,13 @@ class CreatePost extends Component implements HasForms
                         ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
 
                     Forms\Components\TextInput::make('slug')
-                        ->label(__('filament-blog::filament-blog.slug'))
+                        ->label(__('Slug'))
                         ->disabled()
                         ->required()
                         ->unique(Post::class, 'slug', fn ($record) => $record),
 
                     Forms\Components\Textarea::make('excerpt')
-                        ->label(__('filament-blog::filament-blog.excerpt'))
+                        ->label(__('Excerpt'))
                         ->rows(2)
                         ->minLength(50)
                         ->maxLength(1000)
@@ -51,9 +51,9 @@ class CreatePost extends Component implements HasForms
                         ]),
 
                     Forms\Components\FileUpload::make('banner')
-                        ->label(__('filament-blog::filament-blog.banner'))
+                        ->label(__('Banner'))
                         ->image()
-                        ->maxSize(config('filament-blog.banner.maxSize', 5120))
+                        ->maxSize(1024 * 5)
                         ->imageCropAspectRatio(config('filament-blog.banner.cropAspectRatio', '16:9'))
                         ->disk(config('filament-blog.banner.disk', 'public'))
                         ->directory(config('filament-blog.banner.directory', 'blog'))
@@ -63,16 +63,14 @@ class CreatePost extends Component implements HasForms
 
                     self::getContentEditor('content'),
 
-                    Forms\Components\BelongsToSelect::make('blog_author_id')
-                        ->label(__('filament-blog::filament-blog.author'))
-                        ->relationship('author', 'name')
-                        ->searchable()
-                        ->required(),
+//                    Forms\Components\Select::make('blog_author_id')
+//                        ->label(__('filament-blog::filament-blog.author'))
+//                        ->relationship('author', 'name')
+//                        ->required(),
 
-                    Forms\Components\BelongsToSelect::make('blog_category_id')
+                    Forms\Components\Select::make('blog_category_id')
                         ->label(__('filament-blog::filament-blog.category'))
-                        ->relationship('category', 'name')
-                        ->searchable()
+//                        ->relationship('category', 'name')
                         ->required(),
 
                     Forms\Components\DatePicker::make('published_at')
