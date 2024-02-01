@@ -7,5 +7,7 @@ use XtendLunar\Addons\PageBuilder\Fields\Concerns\WithLanguages;
 
 class RichEditor extends FilamentRichEditor
 {
+    protected string $view = 'xtend-lunar-page-builder::components.fields.rich-editor';
+
     use WithLanguages;
 }
