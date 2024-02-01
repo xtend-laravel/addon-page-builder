@@ -10,6 +10,12 @@ class CmsCategory extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'name' => 'json',
+        'content' => 'json',
+        'is_visible' => 'boolean',
+    ];
+
     public function posts()
     {
         return $this->hasMany(CmsPost::class, 'category_id', 'id');

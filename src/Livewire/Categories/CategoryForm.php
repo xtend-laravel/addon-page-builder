@@ -44,10 +44,10 @@ class CategoryForm extends Component implements HasForms
                         ->translatable()
                         ->required()
                         ->reactive()
-                        ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
+                        ->afterStateUpdated(fn($state, callable $set) => dd($state) && $set('slug', Str::slug($state['en']))),
                     Forms\Components\TextInput::make('slug')
-                        ->disabled()
                         ->required()
+                        ->alphaDash()
                         ->unique(Category::class, 'slug', ignorable: $this->category)
                     ,
                     RichEditor::make('description')
@@ -67,6 +67,7 @@ class CategoryForm extends Component implements HasForms
     public function submit()
     {
         $state = $this->form->getState();
+        dd($state);
 
         $this->category->fill($state)->save();
 
