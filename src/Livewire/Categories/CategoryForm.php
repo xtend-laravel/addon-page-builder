@@ -10,6 +10,7 @@ use Filament\Forms;
 use Stephenjude\FilamentBlog\Traits\HasContentEditor;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
+use XtendLunar\Addons\PageBuilder\Fields\TextInput;
 use XtendLunar\Addons\PageBuilder\Models\CmsCategory as Category;
 
 class CategoryForm extends Component implements HasForms
@@ -39,7 +40,8 @@ class CategoryForm extends Component implements HasForms
         return [
             Forms\Components\Card::make()
                 ->schema([
-                    Forms\Components\TextInput::make('name')
+                    TextInput::make('name')
+                        ->translatable()
                         ->required()
                         ->reactive()
                         ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
@@ -49,6 +51,7 @@ class CategoryForm extends Component implements HasForms
                         ->unique(Category::class, 'slug', ignorable: $this->category)
                     ,
                     RichEditor::make('description')
+                        ->translatable()
                         ->disableToolbarButtons(['attachFiles'])
                         ->columnSpan(2),
                     Forms\Components\Toggle::make('is_visible')

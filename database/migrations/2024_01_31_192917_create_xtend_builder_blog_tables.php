@@ -14,9 +14,9 @@ return new class () extends Migration {
     {
         Schema::create('xtend_builder_cms_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->json('name');
             $table->string('slug')->unique();
-            $table->longText('description')->nullable();
+            $table->json('description')->nullable();
             $table->boolean('is_visible')->default(false);
             $table->timestamps();
         });
