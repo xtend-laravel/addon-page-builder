@@ -15,4 +15,9 @@ class CmsPost extends Model
     {
         return $this->belongsTo(CmsCategory::class, 'category_id', 'id');
     }
+
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\LunarStaff::class, 'lunar_staff_id', 'id');
+    }
 }

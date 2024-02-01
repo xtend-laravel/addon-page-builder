@@ -5,8 +5,8 @@ namespace XtendLunar\Addons\PageBuilder\Livewire\Posts;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
-use Stephenjude\FilamentBlog\Models\Post;
 use Filament\Tables;
+use XtendLunar\Addons\PageBuilder\Models\CmsPost as Post;
 
 class ListPosts extends Component implements HasTable
 {
@@ -24,9 +24,6 @@ class ListPosts extends Component implements HasTable
             Tables\Columns\TextColumn::make('title')
                 ->searchable()
                 ->sortable(),
-//            Tables\Columns\TextColumn::make('author.name')
-//                ->searchable()
-//                ->sortable(),
             Tables\Columns\TextColumn::make('category.name')
                 ->searchable()
                 ->sortable(),

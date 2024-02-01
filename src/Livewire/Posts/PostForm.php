@@ -7,10 +7,10 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use Stephenjude\FilamentBlog\Models\Post;
 use Filament\Forms;
 use Stephenjude\FilamentBlog\Traits\HasContentEditor;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use XtendLunar\Addons\PageBuilder\Models\CmsPost as Post;
 
 class PostForm extends Component implements HasForms
 {
@@ -31,8 +31,7 @@ class PostForm extends Component implements HasForms
             'content'          => $this->post->content,
             'banner'           => $this->post->banner,
             'blog_category_id' => $this->post->blog_category_id,
-            'published_at'     => $this->post->published_at ?? today(),
-            'tags'             => $this->post->tags->pluck('name')->toArray(),
+            'status'           => $this->post->status ?? 'draft',
         ]);
     }
 
@@ -68,24 +67,23 @@ class PostForm extends Component implements HasForms
                         ->label(__('Banner'))
                         ->image()
                         ->maxSize(1024 * 5)
-                        ->imageCropAspectRatio(config('filament-blog.banner.cropAspectRatio', '16:9'))
-                        ->disk(config('filament-blog.banner.disk', 'public'))
-                        ->directory(config('filament-blog.banner.directory', 'blog'))
+                        ->imageCropAspectRatio('16:9')
+                        ->directory('cms')
                         ->columnSpan([
                             'sm' => 2,
                         ]),
 
                     self::getContentEditor('content'),
 
-                    Forms\Components\Select::make('blog_category_id')
-                        ->label(__('filament-blog::filament-blog.category'))
+                    Forms\Components\Select::make('category_id')
                         ->relationship('category', 'name')
                         ->required(),
 
-                    Forms\Components\DatePicker::make('published_at')
-                        ->label(__('filament-blog::filament-blog.published_date')),
-                    SpatieTagsInput::make('tags')
-                        ->label(__('filament-blog::filament-blog.tags')),
+                    Forms\Components\Select::make('status')
+                        ->options([
+                            'draft'     => __('Draft'),
+                            'published' => __('Published'),
+                        ])
                 ])
                 ->columns([
                     'sm' => 2,
