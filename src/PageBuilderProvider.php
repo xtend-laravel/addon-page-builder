@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\Gate;
 use Lunar\Hub\Facades\Menu;
 use Lunar\Hub\Menu\MenuLink;
 use Livewire\Livewire;
-use Stephenjude\FilamentBlog\Resources\CategoryResource\Pages\CreateCategory;
-use XtendLunar\Addons\PageBuilder\Livewire\Categories\ListCategories;
+use XtendLunar\Addons\PageBuilder\Livewire\Categories\CreateCategory;
 use XtendLunar\Addons\PageBuilder\Livewire\Posts\CreatePost;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
@@ -93,7 +92,7 @@ class PageBuilderProvider extends XtendAddonProvider
 
         Livewire::component('xtend-lunar-page-builder.posts.create-post', CreatePost::class);
 
-        Livewire::component('xtend-lunar-page-builder.categories.create-category', ListCategories::class);
+        Livewire::component('xtend-lunar-page-builder.categories.create-category', CreateCategory::class);
     }
 
     protected function registerPolicies()

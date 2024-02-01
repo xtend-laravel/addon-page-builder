@@ -10,16 +10,17 @@ use Stephenjude\FilamentBlog\Models\Category;
 use Filament\Forms;
 use Stephenjude\FilamentBlog\Traits\HasContentEditor;
 
+/**
+ * @property Form $form
+ */
 class CreateCategory extends Component implements HasForms
 {
     use InteractsWithForms;
     use HasContentEditor;
 
-    public $data;
-
-    protected function getFormStatePath(): ?string
+    public function mount()
     {
-        return 'data';
+        $this->form->fill();
     }
 
     protected function getFormSchema(): array
