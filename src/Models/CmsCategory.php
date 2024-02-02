@@ -2,18 +2,23 @@
 
 namespace XtendLunar\Addons\PageBuilder\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\HasUrls;
 
 class CmsCategory extends Model
 {
+    use HasTranslations;
+
     protected $table = 'xtend_builder_cms_categories';
 
     protected $guarded = [];
 
     protected $casts = [
-        'name' => 'json',
-        'description' => 'json',
+        'name' => AsCollection::class,
+        'description' => AsCollection::class,
         'is_visible' => 'boolean',
     ];
 

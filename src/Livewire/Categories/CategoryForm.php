@@ -27,7 +27,7 @@ class CategoryForm extends Component implements HasForms
 
         $this->form->fill([
             'name'        => $this->category->name,
-            'description' => $this->category->description ?? ['en'=> '', 'ar' => '', 'fr' => ''],
+            'description' => $this->category->description ?? ['en' => '', 'fr' => '', 'ar' => ''],
             'is_visible'  => $this->category->is_visible ?? true,
             'created_at'  => $this->category->created_at,
             'updated_at'  => $this->category->updated_at,
@@ -72,7 +72,6 @@ class CategoryForm extends Component implements HasForms
         }
 
     }
-
 
     public function render()
     {
