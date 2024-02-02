@@ -22,5 +22,7 @@
         }
     },
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "stephenjude/filament-blog": "^1.1"
+    }
 }

@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Gate;
 use Lunar\Hub\Facades\Menu;
 use Lunar\Hub\Menu\MenuLink;
 use Livewire\Livewire;
+use XtendLunar\Addons\PageBuilder\Livewire\Categories\CategoryForm;
+use XtendLunar\Addons\PageBuilder\Livewire\Categories\ListCategories;
+use XtendLunar\Addons\PageBuilder\Livewire\Posts\ListPosts;
+use XtendLunar\Addons\PageBuilder\Livewire\Posts\PostForm;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table;
@@ -50,13 +54,27 @@ class PageBuilderProvider extends XtendAddonProvider
         Blade::componentNamespace('XtendLunar\\Addons\\PageBuilder\\Components', 'xtend-lunar-page-builder');
 
         Menu::slot('sidebar')
-            ->group('hub.configure')
+            ->group('hub.content')
+            ->name('Content')
             ->addItem(function (MenuLink $item) {
-                return $item->name('Page builder')
+                return $item->name(__('Pages'))
                     ->handle('hub.page-builder')
                     ->route('hub.page-builder.index')
                     ->icon('cube');
-            });
+            })
+            ->addItem(function (MenuLink $item) {
+                return $item->name(__('Posts'))
+                    ->handle('hub.content.posts')
+                    ->route('hub.content.posts.index')
+                    ->icon('document-text');
+            })
+            ->addItem(function (MenuLink $item) {
+                return $item->name(__('Categories'))
+                    ->handle('hub.content.categories')
+                    ->route('hub.content.categories.index')
+                    ->icon('collection');
+            })
+        ;
     }
 
     protected function registerLivewireComponents(): void
@@ -64,6 +82,12 @@ class PageBuilderProvider extends XtendAddonProvider
         Livewire::component('xtend-lunar-page-builder.widget-slots.table', Table::class);
         Livewire::component('xtend-lunar-page-builder.widget-slots.create', Create::class);
         Livewire::component('xtend-lunar-page-builder.widget-slots.edit', Edit::class);
+
+        Livewire::component('xtend-lunar.page-builder.posts.list-posts', ListPosts::class);
+        Livewire::component('xtend-lunar-page-builder.posts.create-post', PostForm::class);
+
+        Livewire::component('xtend-lunar-page-builder.categories.list-categories', ListCategories::class);
+        Livewire::component('xtend-lunar-page-builder.categories.form', CategoryForm::class);
     }
 
     protected function registerPolicies()
