@@ -8,7 +8,7 @@ use Lunar\Hub\Models\Staff;
 
 class BlogPost extends Model
 {
-    protected $table = 'xtend_builder_cms_posts';
+    protected $table = 'xtend_builder_blog_posts';
 
     protected $guarded = [];
 

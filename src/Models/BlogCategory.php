@@ -12,7 +12,7 @@ class BlogCategory extends Model
 {
     use HasTranslations;
 
-    protected $table = 'xtend_builder_cms_categories';
+    protected $table = 'xtend_builder_blog_categories';
 
     protected $guarded = [];
 
