@@ -76,7 +76,7 @@ class PostForm extends Component implements HasForms
                     self::getContentEditor('content'),
 
                     Forms\Components\Select::make('category_id')
-                        ->relationship('category', 'name')
+                        ->relationship('category', 'name->en')
                         ->required(),
 
                     Forms\Components\Select::make('status')

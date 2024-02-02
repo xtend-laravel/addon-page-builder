@@ -10,6 +10,15 @@ trait WithLanguages
 {
     protected bool | Closure | null $translatable = false;
 
+    // set initial state to '' to avoid error
+    protected function bootWithLanguages(): void
+    {
+        foreach ($this->getLanguages() as $language) {
+            $this->state[$language->code] = $this->state[$language->code] ?? '';
+        }
+    }
+
+
     public function translatable(bool | Closure | null $translatable = true): static
     {
         $this->translatable = $translatable;
