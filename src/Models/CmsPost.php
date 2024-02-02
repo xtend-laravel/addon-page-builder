@@ -4,6 +4,7 @@ namespace XtendLunar\Addons\PageBuilder\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Lunar\Hub\Models\Staff;
 
 class CmsPost extends Model
 {
@@ -18,6 +19,6 @@ class CmsPost extends Model
 
     public function author(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\LunarStaff::class, 'lunar_staff_id', 'id');
+        return $this->belongsTo(Staff::class, 'lunar_staff_id', 'id');
     }
 }
