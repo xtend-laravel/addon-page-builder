@@ -21,7 +21,8 @@ class BlogCategorySeeder extends Seeder
                     'ar' => 'مقالات تكنولوجيا ذات صلة',
                     'fr' => 'Articles liés à la technologie',
                 ],
-                'slug'        => 'technology'
+                'slug'        => 'technology',
+                'is_visible'  => true,
             ],
             [
                 'name'        => [
@@ -34,7 +35,8 @@ class BlogCategorySeeder extends Seeder
                     'ar' => 'مقالات ذات صلة بالأزياء',
                     'fr' => 'Articles liés à la mode',
                 ],
-                'slug'        => 'fashion'
+                'slug'        => 'fashion',
+                'is_visible'  => true,
             ],
             [
                 'name'        => [
@@ -47,7 +49,8 @@ class BlogCategorySeeder extends Seeder
                     'ar' => 'مقالات ذات صلة بالتصميم والاتجاهات',
                     'fr' => 'Articles liés à la conception et aux tendances',
                 ],
-                'slug'        => 'design-trends'
+                'slug'        => 'design-trends',
+                'is_visible'  => true,
             ]
         ];
 
