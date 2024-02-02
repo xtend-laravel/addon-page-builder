@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Language;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
 use XtendLunar\Addons\PageBuilder\Fields\TextArea;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
@@ -24,7 +25,8 @@ class PostForm extends Component implements HasForms
     {
         $this->post = $post ?? new Post;
 
-        $this->form->fill([
+
+        $state = [
             'title'            => $this->post->title,
             'slug'             => $this->post->slug,
             'excerpt'          => $this->post->excerpt,
@@ -32,7 +34,15 @@ class PostForm extends Component implements HasForms
             'banner'           => $this->post->banner,
             'blog_category_id' => $this->post->blog_category_id,
             'status'           => $this->post->status ?? 'draft',
-        ]);
+        ];
+
+        $content = Language::all()->mapWithKeys(fn(Language $language) => [
+            'content.' . $language->code => $this->post?->translate('content', $language->code),
+        ])->toArray();
+
+        $state = array_merge($state, $content);
+
+        $this->form->fill($state);
     }
 
     protected function getFormModel()
@@ -89,8 +99,7 @@ class PostForm extends Component implements HasForms
                         ]),
 
                     Forms\Components\Select::make('category_id')
-                        ->relationship('category', 'name->en')
-                        ->required(),
+                        ->relationship('category', 'name'),
 
                     Forms\Components\Select::make('status')
                         ->options([
@@ -107,6 +116,7 @@ class PostForm extends Component implements HasForms
 
     public function submit()
     {
+        dd($this->form->getState());
         $state = $this->form->getState();
 
         $this->post->fill($state)->save();
