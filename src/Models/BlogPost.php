@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Hub\Models\Staff;
 
-class CmsPost extends Model
+class BlogPost extends Model
 {
     protected $table = 'xtend_builder_cms_posts';
 
@@ -14,7 +14,7 @@ class CmsPost extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(CmsCategory::class, 'category_id', 'id');
+        return $this->belongsTo(BlogCategory::class, 'category_id', 'id');
     }
 
     public function author(): BelongsTo

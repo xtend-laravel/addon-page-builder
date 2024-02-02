@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -12,7 +12,7 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('xtend_builder_cms_categories', function (Blueprint $table) {
+        Schema::create('xtend_builder_blog_posts', function (Blueprint $table) {
             $table->id();
             $table->json('name');
             $table->string('slug')->unique();
@@ -21,10 +21,10 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('xtend_builder_cms_posts', function (Blueprint $table) {
+        Schema::create('xtend_builder_blog_posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lunar_staff_id')->nullable()->constrained('lunar_staff')->nullOnDelete();
-            $table->foreignId('category_id')->nullable()->constrained('xtend_builder_cms_categories')->nullOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained('xtend_builder_blog_categories')->nullOnDelete();
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('excerpt')->nullable();
@@ -42,7 +42,7 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('xtend_builder_cms_posts');
-        Schema::dropIfExists('xtend_builder_cms_categories');
+        Schema::dropIfExists('xtend_builder_blog_posts');
+        Schema::dropIfExists('xtend_builder_blog_categories');
     }
 };

@@ -11,7 +11,7 @@ use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
 use XtendLunar\Addons\PageBuilder\Fields\TextArea;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
-use XtendLunar\Addons\PageBuilder\Models\CmsPost as Post;
+use XtendLunar\Addons\PageBuilder\Models\BlogPost as Post;
 
 class PostForm extends Component implements HasForms
 {

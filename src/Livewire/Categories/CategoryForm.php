@@ -4,19 +4,16 @@ namespace XtendLunar\Addons\PageBuilder\Livewire\Categories;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms;
-use Stephenjude\FilamentBlog\Traits\HasContentEditor;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
-use XtendLunar\Addons\PageBuilder\Models\CmsCategory as Category;
+use XtendLunar\Addons\PageBuilder\Models\BlogCategory as Category;
 
 class CategoryForm extends Component implements HasForms
 {
     use InteractsWithForms;
-    use HasContentEditor;
     use Notifies;
 
     public Category $category;

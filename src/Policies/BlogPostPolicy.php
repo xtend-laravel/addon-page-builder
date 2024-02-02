@@ -4,7 +4,7 @@ namespace XtendLunar\Addons\PageBuilder\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use XtendLunar\Addons\PageBuilder\Models\CmsPost;
+use XtendLunar\Addons\PageBuilder\Models\BlogPost;
 
 class BlogPostPolicy
 {
@@ -15,7 +15,7 @@ class BlogPostPolicy
         return true;
     }
 
-    public function show(User $user = null, CmsPost $model): bool
+    public function show(User $user = null, BlogPost $model): bool
     {
         return true;
     }
@@ -30,22 +30,22 @@ class BlogPostPolicy
         return false;
     }
 
-    public function update(User $user, CmsPost $model): bool
+    public function update(User $user, BlogPost $model): bool
     {
         return false;
     }
 
-    public function updateBulk(User $user, CmsPost $model): bool
+    public function updateBulk(User $user, BlogPost $model): bool
     {
         return false;
     }
 
-    public function deleteBulk(User $user, CmsPost $model): bool
+    public function deleteBulk(User $user, BlogPost $model): bool
     {
         return false;
     }
 
-    public function delete(User $user, CmsPost $model): bool
+    public function delete(User $user, BlogPost $model): bool
     {
         return false;
     }

@@ -17,7 +17,7 @@ use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table;
 use XtendLunar\Addons\PageBuilder\Models\CmsPage;
-use XtendLunar\Addons\PageBuilder\Models\CmsPost;
+use XtendLunar\Addons\PageBuilder\Models\BlogPost;
 use XtendLunar\Addons\PageBuilder\Models\Form;
 use XtendLunar\Addons\PageBuilder\Models\FormSubmission;
 use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
@@ -34,7 +34,7 @@ class PageBuilderProvider extends XtendAddonProvider
     protected $policies = [
         WidgetSlot::class => WidgetSlotPolicy::class,
         CmsPage::class => CmsPagePolicy::class,
-        CmsPost::class => BlogPostPolicy::class,
+        BlogPost::class => BlogPostPolicy::class,
         Form::class => FormPolicy::class,
         FormSubmission::class => FormSubmissionPolicy::class,
     ];

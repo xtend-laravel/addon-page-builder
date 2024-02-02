@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\HasUrls;
 
-class CmsCategory extends Model
+class BlogCategory extends Model
 {
     use HasTranslations;
 
@@ -24,12 +24,12 @@ class CmsCategory extends Model
 
     public function posts()
     {
-        return $this->hasMany(CmsPost::class, 'category_id', 'id');
+        return $this->hasMany(BlogPost::class, 'category_id', 'id');
     }
 
     protected static function booted()
     {
-        static::creating(function (CmsCategory $category) {
+        static::creating(function (BlogCategory $category) {
             $category->slug = $category->makeSlug();
         });
     }

@@ -6,7 +6,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
 use Filament\Tables;
-use XtendLunar\Addons\PageBuilder\Models\CmsPost as Post;
+use XtendLunar\Addons\PageBuilder\Models\BlogPost as Post;
 
 class ListPosts extends Component implements HasTable
 {
