@@ -29,11 +29,11 @@
             {!! ($placeholder = $getPlaceholder()) ? "placeholder=\"{$placeholder}\"" : null !!}
             {!! ($interval = $getStep()) ? "step=\"{$interval}\"" : null !!}
             @if (! $isConcealed())
-                {!! filled($length = $getMaxLength()) ? "maxlength=\"{$length}\"" : null !!}
-                {!! filled($value = $getMaxValue()) ? "max=\"{$value}\"" : null !!}
-                {!! filled($length = $getMinLength()) ? "minlength=\"{$length}\"" : null !!}
-                {!! filled($value = $getMinValue()) ? "min=\"{$value}\"" : null !!}
-                {!! $isRequired() ? 'required' : null !!}
+                {!! filled($length = $getMaxLength()) && $defaultLocale ? "maxlength=\"{$length}\"" : null !!}
+                {!! filled($value = $getMaxValue()) && $defaultLocale ? "max=\"{$value}\"" : null !!}
+                {!! filled($length = $getMinLength()) && $defaultLocale ? "minlength=\"{$length}\"" : null !!}
+                {!! filled($value = $getMinValue()) && $defaultLocale ? "min=\"{$value}\"" : null !!}
+                {!! $isRequired() && $defaultLocale ? 'required' : null !!}
             @endif
             {{ $getExtraAlpineAttributeBag() }}
             {{ $getExtraInputAttributeBag()->class([
