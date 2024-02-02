@@ -27,7 +27,6 @@ class CategoryForm extends Component implements HasForms
 
         $this->form->fill([
             'name'        => $this->category->name,
-            'slug'        => $this->category->slug,
             'description' => $this->category->description,
             'is_visible'  => $this->category->is_visible ?? true,
             'created_at'  => $this->category->created_at,
@@ -45,11 +44,6 @@ class CategoryForm extends Component implements HasForms
                         ->required()
                         ->reactive()
                         ->afterStateUpdated(fn($state, callable $set) => dd($state) && $set('slug', Str::slug($state['en']))),
-                    Forms\Components\TextInput::make('slug')
-                        ->required()
-                        ->alphaDash()
-                        ->unique(Category::class, 'slug', ignorable: $this->category)
-                    ,
                     RichEditor::make('description')
                         ->translatable()
                         ->disableToolbarButtons(['attachFiles'])
@@ -67,16 +61,15 @@ class CategoryForm extends Component implements HasForms
     public function submit()
     {
         $state = $this->form->getState();
-        dd($state);
 
         $this->category->fill($state)->save();
 
         if ($this->category->wasRecentlyCreated) {
-            $this->notify($state['name'] . ' category created');
+            $this->notify($state['name']['en'] . ' category created');
 
             $this->redirect(route('hub.content.categories.edit', $this->category));
         } else {
-            $this->notify($state['name'] . ' category updated');
+            $this->notify($state['name']['en'] . ' category updated');
         }
 
     }

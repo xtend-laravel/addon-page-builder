@@ -25,19 +25,15 @@ class ListCategories extends Component implements HasTable
     protected function getTableColumns(): array
     {
         return [
-            TextColumn::make('name')
-                ->label(__('filament-blog::filament-blog.name'))
+            TextColumn::make('name.en')
                 ->searchable()
                 ->sortable(),
             TextColumn::make('slug')
-                ->label(__('filament-blog::filament-blog.slug'))
                 ->searchable()
                 ->sortable(),
             IconColumn::make('is_visible')
-                ->boolean()
-                ->label(__('filament-blog::filament-blog.visibility')),
+                ->boolean(),
             TextColumn::make('updated_at')
-                ->label(__('filament-blog::filament-blog.last_updated'))
                 ->date(),
         ];
     }
