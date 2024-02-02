@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('xtend_builder_blog_posts', function (Blueprint $table) {
+        Schema::create('xtend_builder_blog_categories', function (Blueprint $table) {
             $table->id();
             $table->json('name');
             $table->string('slug')->unique();
