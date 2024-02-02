@@ -65,11 +65,6 @@ class PostForm extends Component implements HasForms
                         ->translatable(),
                         //->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
 
-                    TextInput::make('slug')
-                        ->disabled()
-                        //->required()
-                        ->unique(BlogPost::class, 'slug', fn($record) => $record),
-
                     RichEditor::make('content')
                         // ->minLength(50)
                         // ->maxLength(1000)

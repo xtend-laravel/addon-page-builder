@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\HasUrls;
+use XtendLunar\Addons\PageBuilder\Concerns\WithSlug;
 
 class BlogCategory extends Model
 {
     use HasTranslations;
+    use WithSlug;
 
     protected $table = 'xtend_builder_blog_categories';
 
@@ -27,21 +29,4 @@ class BlogCategory extends Model
         return $this->hasMany(BlogPost::class, 'category_id', 'id');
     }
 
-    protected static function booted()
-    {
-        static::creating(function (BlogCategory $category) {
-            $category->slug = $category->makeSlug();
-        });
-    }
-
-    public function makeSlug(): ?string
-    {
-        $slug = Str::slug($this->name['en']);
-
-        while (static::where('slug', $slug)->where('id', '!=', $this->id)->exists()) {
-            $slug .= '-' . strtolower(Str::random(5));
-        }
-
-        return $slug;
-    }
 }
