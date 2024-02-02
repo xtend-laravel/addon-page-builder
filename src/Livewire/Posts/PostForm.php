@@ -28,7 +28,7 @@ class PostForm extends Component implements HasForms
             'banner' => $this->post->banner,
             'blog_category_id' => $this->post->blog_category_id,
             'status' => $this->post->status ?? 'draft',
-        ] : [];
+        ] : ['status' => 'draft'];
 
         $translatableState = $this->setRichAreaTranslatableState([
             'excerpt',
@@ -40,9 +40,9 @@ class PostForm extends Component implements HasForms
         $this->form->fill($state);
     }
 
-    protected function getFormModel(): BlogPost
+    protected function getFormModel(): BlogPost|string
     {
-        return $this->post ?? new BlogPost();
+        return $this->post ?? BlogPost::class;
     }
 
     protected function setRichAreaTranslatableState(array $fields): array
@@ -60,14 +60,10 @@ class PostForm extends Component implements HasForms
             Forms\Components\Card::make()
                 ->schema([
                     TextInput::make('title')
-                        //->required()
-                        //->reactive()
+                        ->required()
                         ->translatable(),
-                        //->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
 
-                    RichEditor::make('content')
-                        // ->minLength(50)
-                        // ->maxLength(1000)
+                    RichEditor::make('excerpt')
                         ->translatable()
                         ->disableToolbarButtons([
                             'attachFiles',
@@ -100,9 +96,10 @@ class PostForm extends Component implements HasForms
                         ]),
 
                     Forms\Components\Select::make('category_id')
-                        ->relationship('category', 'name'),
+                        ->relationship('category', 'name->en'),
 
                     Forms\Components\Select::make('status')
+                        ->default('draft')
                         ->options([
                             'draft'     => __('Draft'),
                             'published' => __('Published'),
@@ -117,17 +114,20 @@ class PostForm extends Component implements HasForms
 
     public function submit(): void
     {
-        dd($this->form->getState());
         $state = $this->form->getState();
 
-        $this->post->fill($state)->save();
+        if ($this->post) {
+            $this->post->update($state);
+        } else {
+            $this->post = BlogPost::create($state);
+        }
 
         if ($this->post->wasRecentlyCreated) {
-            $this->notify($state['title'] . ' post created');
+            $this->notify($this->post->translate('title') . ' post created');
 
             $this->redirect(route('hub.content.posts.edit', $this->post));
         } else {
-            $this->notify($state['title'] . ' post updated');
+            $this->notify($this->post->translate('title') . ' post updated');
         }
     }
 

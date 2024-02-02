@@ -34,4 +34,9 @@ class BlogPost extends Model
     {
         return $this->belongsTo(Staff::class, 'lunar_staff_id', 'id');
     }
+
+    public function makeSlugFrom()
+    {
+        return $this->title['en'];
+    }
 }

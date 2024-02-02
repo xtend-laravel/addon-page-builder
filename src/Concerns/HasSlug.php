@@ -15,9 +15,18 @@ trait HasSlug
         });
     }
 
+    public function makeSlugFrom()
+    {
+        return $this->name['en'];
+    }
+
     public function makeSlug(): ?string
     {
-        $slug = Str::slug($this->name['en']); // haha
+        $slug = Str::slug($this->makeSlugFrom()); // haha
+
+        if (blank($slug)) {
+            return null;
+        }
 
         while (static::where('slug', $slug)->where('id', '!=', $this->id)->exists()) {
             $slug .= '-' . strtolower(Str::random(5));

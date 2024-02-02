@@ -15,7 +15,7 @@ return new class extends Migration {
         Schema::create('xtend_builder_blog_categories', function (Blueprint $table) {
             $table->id();
             $table->json('name');
-            $table->string('slug')->unique();
+            $table->string('slug')->nullable()->unique();
             $table->json('description')->nullable();
             $table->boolean('is_visible')->default(false);
             $table->timestamps();
