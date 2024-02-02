@@ -4,19 +4,16 @@ namespace XtendLunar\Addons\PageBuilder\Livewire\Categories;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms;
-use Stephenjude\FilamentBlog\Traits\HasContentEditor;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
-use XtendLunar\Addons\PageBuilder\Models\CmsCategory as Category;
+use XtendLunar\Addons\PageBuilder\Models\BlogCategory as Category;
 
 class CategoryForm extends Component implements HasForms
 {
     use InteractsWithForms;
-    use HasContentEditor;
     use Notifies;
 
     public Category $category;
@@ -27,7 +24,7 @@ class CategoryForm extends Component implements HasForms
 
         $this->form->fill([
             'name'        => $this->category->name,
-            'description' => $this->category->description ?? ['en'=> '', 'ar' => '', 'fr' => ''],
+            'description' => $this->category->description ?? ['en' => '', 'fr' => '', 'ar' => ''],
             'is_visible'  => $this->category->is_visible ?? true,
             'created_at'  => $this->category->created_at,
             'updated_at'  => $this->category->updated_at,
@@ -65,14 +62,12 @@ class CategoryForm extends Component implements HasForms
 
         if ($this->category->wasRecentlyCreated) {
             $this->notify($state['name']['en'] . ' category created');
-
-            $this->redirect(route('hub.content.categories.edit', $this->category));
         } else {
             $this->notify($state['name']['en'] . ' category updated');
         }
 
+        $this->redirect(route('hub.content.categories.index'));
     }
-
 
     public function render()
     {

@@ -23,10 +23,10 @@
 >
     @if ($getTranslatable())
         <x-hub::translatable>
-            @include('xtend-lunar-page-builder::components.fields.partials.translatable-text-field' , ['locale' => $getDefaultLanguage()->code])
+            @include('xtend-lunar-page-builder::components.fields.partials.translatable-text-field' , ['locale' => $getDefaultLanguage()->code, 'defaultLocale' => true])
             @foreach($getLanguages()->filter(fn ($lang) => !$lang->default) as $language)
                <x-slot :name="$language['code']">
-                   @include('xtend-lunar-page-builder::components.fields.partials.translatable-text-field', ['locale' => $language->code])
+                   @include('xtend-lunar-page-builder::components.fields.partials.translatable-text-field', ['locale' => $language->code, 'defaultLocale' => false])
                </x-slot>
             @endforeach
         </x-hub::translatable>

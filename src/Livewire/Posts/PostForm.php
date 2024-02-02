@@ -2,42 +2,57 @@
 
 namespace XtendLunar\Addons\PageBuilder\Livewire\Posts;
 
-use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms;
-use Stephenjude\FilamentBlog\Traits\HasContentEditor;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use XtendLunar\Addons\PageBuilder\Models\CmsPost as Post;
+use Lunar\Models\Language;
+use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
+use XtendLunar\Addons\PageBuilder\Fields\TextArea;
+use XtendLunar\Addons\PageBuilder\Fields\TextInput;
+use XtendLunar\Addons\PageBuilder\Models\BlogPost;
 
 class PostForm extends Component implements HasForms
 {
     use InteractsWithForms;
-    use HasContentEditor;
     use Notifies;
 
-    public Post $post;
+    public ?BlogPost $post = null;
 
-    public function mount($post = null)
+    public function mount()
     {
-        $this->post = $post ?? new Post;
-
-        $this->form->fill([
-            'title'            => $this->post->title,
-            'slug'             => $this->post->slug,
-            'excerpt'          => $this->post->excerpt,
-            'content'          => $this->post->content,
-            'banner'           => $this->post->banner,
+        $state = $this->post ? [
+            'slug' => $this->post->slug,
+            'title' => $this->post->title,
+            'banner' => $this->post->banner,
             'blog_category_id' => $this->post->blog_category_id,
-            'status'           => $this->post->status ?? 'draft',
+            'status' => $this->post->status ?? 'draft',
+        ] : ['status' => 'draft'];
+
+        $translatableState = $this->setRichAreaTranslatableState([
+            'excerpt',
+            'content',
         ]);
+
+        $state = array_merge($state, $translatableState);
+
+        $this->form->fill($state);
     }
 
-    protected function getFormModel()
+    protected function getFormModel(): BlogPost|string
     {
-        return $this->post;
+        return $this->post ?? BlogPost::class;
+    }
+
+    protected function setRichAreaTranslatableState(array $fields): array
+    {
+        return collect($fields)->mapWithKeys(function ($field) {
+            return Language::all()->mapWithKeys(fn(Language $language) => [
+                $field . '.' . $language->code => $this->post?->translate($field, $language->code),
+            ])->toArray();
+        })->toArray();
     }
 
     protected function getFormSchema(): array
@@ -45,20 +60,16 @@ class PostForm extends Component implements HasForms
         return [
             Forms\Components\Card::make()
                 ->schema([
-                    Forms\Components\TextInput::make('title')
+                    TextInput::make('title')
                         ->required()
-                        ->reactive()
-                        ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
+                        ->translatable(),
 
-                    Forms\Components\TextInput::make('slug')
-                        ->disabled()
-                        ->required()
-                        ->unique(Post::class, 'slug', fn($record) => $record),
-
-                    Forms\Components\Textarea::make('excerpt')
-                        ->rows(2)
-                        ->minLength(50)
-                        ->maxLength(1000)
+                    RichEditor::make('excerpt')
+                        ->translatable()
+                        ->disableToolbarButtons([
+                            'attachFiles',
+                            'codeBlock',
+                        ])
                         ->columnSpan([
                             'sm' => 2,
                         ]),
@@ -73,17 +84,27 @@ class PostForm extends Component implements HasForms
                             'sm' => 2,
                         ]),
 
-                    self::getContentEditor('content'),
+                    RichEditor::make('content')
+                        ->label(__('Content'))
+                        ->required()
+                        ->translatable()
+                        ->disableToolbarButtons([
+                            'attachFiles',
+                            'codeBlock',
+                        ])
+                        ->columnSpan([
+                            'sm' => 2,
+                        ]),
 
                     Forms\Components\Select::make('category_id')
-                        ->relationship('category', 'name->en')
-                        ->required(),
+                        ->relationship('category', 'name->en'),
 
                     Forms\Components\Select::make('status')
+                        ->default('draft')
                         ->options([
                             'draft'     => __('Draft'),
                             'published' => __('Published'),
-                        ])
+                        ]),
                 ])
                 ->columns([
                     'sm' => 2,
@@ -92,19 +113,24 @@ class PostForm extends Component implements HasForms
         ];
     }
 
-    public function submit()
+    public function submit(): void
     {
         $state = $this->form->getState();
+        $state['slug'] = Str::slug($state['title']['en']);
 
-        $this->post->fill($state)->save();
+        if ($this->post) {
+            $this->post->update($state);
+        } else {
+            $this->post = BlogPost::create($state);
+        }
 
         if ($this->post->wasRecentlyCreated) {
-            $this->notify($state['title'] . ' post created');
-
-            $this->redirect(route('hub.content.posts.edit', $this->post));
+            $this->notify($this->post->translate('title') . ' post created');
         } else {
-            $this->notify($state['title'] . ' post updated');
+            $this->notify($this->post->translate('title') . ' post updated');
         }
+
+        $this->redirect(route('hub.content.posts.index'));
     }
 
     public function render()

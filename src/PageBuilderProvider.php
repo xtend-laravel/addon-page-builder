@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Gate;
 use Lunar\Hub\Facades\Menu;
 use Lunar\Hub\Menu\MenuLink;
 use Livewire\Livewire;
+use PageBuilder\Database\Seeders\BlogCategorySeeder;
 use XtendLunar\Addons\PageBuilder\Livewire\Categories\CategoryForm;
 use XtendLunar\Addons\PageBuilder\Livewire\Categories\ListCategories;
 use XtendLunar\Addons\PageBuilder\Livewire\Posts\ListPosts;
@@ -17,13 +18,16 @@ use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Table;
 use XtendLunar\Addons\PageBuilder\Models\CmsPage;
+use XtendLunar\Addons\PageBuilder\Models\BlogPost;
 use XtendLunar\Addons\PageBuilder\Models\Form;
 use XtendLunar\Addons\PageBuilder\Models\FormSubmission;
 use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
+use XtendLunar\Addons\PageBuilder\Policies\BlogPostPolicy;
 use XtendLunar\Addons\PageBuilder\Policies\CmsPagePolicy;
 use XtendLunar\Addons\PageBuilder\Policies\FormPolicy;
 use XtendLunar\Addons\PageBuilder\Policies\FormSubmissionPolicy;
 use XtendLunar\Addons\PageBuilder\Policies\WidgetSlotPolicy;
+use Database\Seeders\DatabaseSeeder;
 
 class PageBuilderProvider extends XtendAddonProvider
 {
@@ -32,6 +36,7 @@ class PageBuilderProvider extends XtendAddonProvider
     protected $policies = [
         WidgetSlot::class => WidgetSlotPolicy::class,
         CmsPage::class => CmsPagePolicy::class,
+        BlogPost::class => BlogPostPolicy::class,
         Form::class => FormPolicy::class,
         FormSubmission::class => FormSubmissionPolicy::class,
     ];
@@ -46,6 +51,10 @@ class PageBuilderProvider extends XtendAddonProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/xtend-lunar-page-builder.php', 'xtend-lunar-page-builder');
 
         $this->registerLivewireComponents();
+
+        $this->registerSeeders([
+            BlogCategorySeeder::class,
+        ]);
     }
 
     public function boot()
@@ -95,5 +104,14 @@ class PageBuilderProvider extends XtendAddonProvider
         foreach ($this->policies as $model => $policy) {
             Gate::policy($model, $policy);
         }
+    }
+
+    protected function registerSeeders(array $seeders = []): void
+    {
+        $this->callAfterResolving(DatabaseSeeder::class, function (DatabaseSeeder $seeder) use ($seeders) {
+            collect($seeders)->each(
+                fn ($seederClass) => $seeder->call($seederClass),
+            );
+        });
     }
 }
