@@ -25,10 +25,10 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('lunar_staff_id')->nullable()->constrained('lunar_staff')->nullOnDelete();
             $table->foreignId('category_id')->nullable()->constrained('xtend_builder_blog_categories')->nullOnDelete();
+            $table->string('slug')->unique();
             $table->json('title');
-            $table->json('slug')->unique();
             $table->json('excerpt')->nullable();
-            $table->json('content');
+            $table->json('content')->nullable();
             $table->string('banner')->nullable();
             $table->string('status')->default('draft');
             $table->timestamps();
