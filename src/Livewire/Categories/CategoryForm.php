@@ -44,6 +44,7 @@ class CategoryForm extends Component implements HasForms
                         ->required(),
                     RichEditor::make('description')
                         ->translatable()
+                        ->required()
                         ->disableToolbarButtons(['attachFiles'])
                         ->columnSpan(2),
                     Forms\Components\Toggle::make('is_visible')
