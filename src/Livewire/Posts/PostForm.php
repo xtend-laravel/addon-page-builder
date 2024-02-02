@@ -24,20 +24,18 @@ class PostForm extends Component implements HasForms
     {
         $state = $this->post ? [
             'slug' => $this->post->slug,
+            'title' => $this->post->title,
             'banner' => $this->post->banner,
             'blog_category_id' => $this->post->blog_category_id,
             'status' => $this->post->status ?? 'draft',
         ] : [];
 
-        if ($this->post) {
-            $translatableState = $this->setTranslatableState([
-                'title',
-                'excerpt',
-                'content',
-            ]);
+        $translatableState = $this->setRichAreaTranslatableState([
+            'excerpt',
+            'content',
+        ]);
 
-            $state = array_merge($state, $translatableState);
-        }
+        $state = array_merge($state, $translatableState);
 
         $this->form->fill($state);
     }
@@ -47,7 +45,7 @@ class PostForm extends Component implements HasForms
         return $this->post ?? new BlogPost();
     }
 
-    protected function setTranslatableState(array $fields): array
+    protected function setRichAreaTranslatableState(array $fields): array
     {
         return collect($fields)->mapWithKeys(function ($field) {
             return Language::all()->mapWithKeys(fn(Language $language) => [
@@ -62,21 +60,24 @@ class PostForm extends Component implements HasForms
             Forms\Components\Card::make()
                 ->schema([
                     TextInput::make('title')
-                        ->required()
+                        //->required()
                         //->reactive()
                         ->translatable(),
                         //->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
 
                     TextInput::make('slug')
                         ->disabled()
-                        ->required()
+                        //->required()
                         ->unique(BlogPost::class, 'slug', fn($record) => $record),
 
-                    Textarea::make('excerpt')
-                        ->rows(2)
-                        ->minLength(50)
-                        ->maxLength(1000)
+                    RichEditor::make('content')
+                        // ->minLength(50)
+                        // ->maxLength(1000)
                         ->translatable()
+                        ->disableToolbarButtons([
+                            'attachFiles',
+                            'codeBlock',
+                        ])
                         ->columnSpan([
                             'sm' => 2,
                         ]),
