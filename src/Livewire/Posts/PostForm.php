@@ -4,7 +4,6 @@ namespace XtendLunar\Addons\PageBuilder\Livewire\Posts;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -19,28 +18,33 @@ class PostForm extends Component implements HasForms
     use InteractsWithForms;
     use Notifies;
 
-    public BlogPost $post;
+    public ?BlogPost $post = null;
 
-    public function mount($post = null)
+    public function mount()
     {
-        $this->post = $post ?? new BlogPost;
-
-        $state = [
+        $state = $this->post ? [
             'slug' => $this->post->slug,
             'banner' => $this->post->banner,
             'blog_category_id' => $this->post->blog_category_id,
             'status' => $this->post->status ?? 'draft',
-        ];
+        ] : [];
 
-        $translatableState = $this->setTranslatableState([
-            'title',
-            'excerpt',
-            'content',
-        ]);
+        if ($this->post) {
+            $translatableState = $this->setTranslatableState([
+                'title',
+                'excerpt',
+                'content',
+            ]);
 
-        $state = array_merge($state, $translatableState);
+            $state = array_merge($state, $translatableState);
+        }
 
         $this->form->fill($state);
+    }
+
+    protected function getFormModel(): BlogPost
+    {
+        return $this->post ?? new BlogPost();
     }
 
     protected function setTranslatableState(array $fields): array
@@ -52,11 +56,6 @@ class PostForm extends Component implements HasForms
         })->toArray();
     }
 
-    protected function getFormModel()
-    {
-        return $this->post;
-    }
-
     protected function getFormSchema(): array
     {
         return [
@@ -64,9 +63,9 @@ class PostForm extends Component implements HasForms
                 ->schema([
                     TextInput::make('title')
                         ->required()
-                        ->reactive()
-                        ->translatable()
-                        ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
+                        //->reactive()
+                        ->translatable(),
+                        //->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
 
                     TextInput::make('slug')
                         ->disabled()
@@ -120,7 +119,7 @@ class PostForm extends Component implements HasForms
         ];
     }
 
-    public function submit()
+    public function submit(): void
     {
         dd($this->form->getState());
         $state = $this->form->getState();
