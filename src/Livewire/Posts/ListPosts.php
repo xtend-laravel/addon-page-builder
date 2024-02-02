@@ -20,17 +20,20 @@ class ListPosts extends Component implements HasTable
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\ImageColumn::make('banner'),
+            Tables\Columns\ImageColumn::make('banner')->disk('do'),
             Tables\Columns\TextColumn::make('title')
+                ->getStateUsing(fn($record) => $record->translate('title'))
                 ->searchable()
                 ->sortable(),
             Tables\Columns\TextColumn::make('category.name')
+                ->getStateUsing(fn($record) => $record->category->translate('name'))
                 ->searchable()
                 ->sortable(),
-            Tables\Columns\SpatieTagsColumn::make('tags'),
-            Tables\Columns\TextColumn::make('published_at')
-                ->date()
-                ->sortable(),
+            Tables\Columns\BadgeColumn::make('status')
+                ->colors([
+                    'secondary',
+                    'success' => 'published'
+                ])
         ];
     }
 
