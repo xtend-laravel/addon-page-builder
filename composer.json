@@ -5,7 +5,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "XtendLunar\\Addons\\PageBuilder\\": "src/"
+            "XtendLunar\\Addons\\PageBuilder\\": "src/",
+            "PageBuilder\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "authors": [
