@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\HasUrls;
-use XtendLunar\Addons\PageBuilder\Concerns\WithSlug;
+use XtendLunar\Addons\PageBuilder\Concerns\HasSlug;
 
 class BlogCategory extends Model
 {
     use HasTranslations;
-    use WithSlug;
+    use HasSlug;
 
     protected $table = 'xtend_builder_blog_categories';
 

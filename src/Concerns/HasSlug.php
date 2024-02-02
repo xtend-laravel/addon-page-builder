@@ -4,9 +4,8 @@ namespace XtendLunar\Addons\PageBuilder\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use XtendLunar\Addons\PageBuilder\Models\BlogCategory;
 
-trait WithSlug
+trait HasSlug
 {
 
     public static function bootWithSlug()

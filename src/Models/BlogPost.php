@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Hub\Models\Staff;
+use XtendLunar\Addons\PageBuilder\Concerns\HasSlug;
 
 class BlogPost extends Model
 {
     use HasTranslations;
+    use HasSlug;
 
     protected $table = 'xtend_builder_blog_posts';
 
