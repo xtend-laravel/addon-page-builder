@@ -4,6 +4,7 @@ namespace XtendLunar\Addons\PageBuilder\Livewire\Posts;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -115,6 +116,7 @@ class PostForm extends Component implements HasForms
     public function submit(): void
     {
         $state = $this->form->getState();
+        $state['slug'] = Str::slug($state['title']['en']);
 
         if ($this->post) {
             $this->post->update($state);
@@ -124,11 +126,11 @@ class PostForm extends Component implements HasForms
 
         if ($this->post->wasRecentlyCreated) {
             $this->notify($this->post->translate('title') . ' post created');
-
-            $this->redirect(route('hub.content.posts.edit', $this->post));
         } else {
             $this->notify($this->post->translate('title') . ' post updated');
         }
+
+        $this->redirect(route('hub.content.posts.index'));
     }
 
     public function render()

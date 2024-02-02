@@ -12,7 +12,6 @@ use XtendLunar\Addons\PageBuilder\Concerns\HasSlug;
 class BlogPost extends Model
 {
     use HasTranslations;
-    use HasSlug;
 
     protected $table = 'xtend_builder_blog_posts';
 
