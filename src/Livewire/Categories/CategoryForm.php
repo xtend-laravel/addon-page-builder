@@ -41,9 +41,7 @@ class CategoryForm extends Component implements HasForms
                 ->schema([
                     TextInput::make('name')
                         ->translatable()
-                        ->required()
-                        ->reactive()
-                        ->afterStateUpdated(fn($state, callable $set) => dd($state) && $set('slug', Str::slug($state['en']))),
+                        ->required(),
                     RichEditor::make('description')
                         ->translatable()
                         ->disableToolbarButtons(['attachFiles'])

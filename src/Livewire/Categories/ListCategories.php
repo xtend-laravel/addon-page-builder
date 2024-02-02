@@ -19,7 +19,7 @@ class ListCategories extends Component implements HasTable
 
     protected function getTableQuery()
     {
-        return Category::query();
+        return Category::query()->latest('id');
     }
 
     protected function getTableColumns(): array
