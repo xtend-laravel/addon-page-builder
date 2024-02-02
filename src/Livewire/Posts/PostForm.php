@@ -2,20 +2,20 @@
 
 namespace XtendLunar\Addons\PageBuilder\Livewire\Posts;
 
-use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms;
-use Stephenjude\FilamentBlog\Traits\HasContentEditor;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
+use XtendLunar\Addons\PageBuilder\Fields\TextArea;
+use XtendLunar\Addons\PageBuilder\Fields\TextInput;
 use XtendLunar\Addons\PageBuilder\Models\CmsPost as Post;
 
 class PostForm extends Component implements HasForms
 {
     use InteractsWithForms;
-    use HasContentEditor;
     use Notifies;
 
     public Post $post;
@@ -45,20 +45,23 @@ class PostForm extends Component implements HasForms
         return [
             Forms\Components\Card::make()
                 ->schema([
-                    Forms\Components\TextInput::make('title')
+                    TextInput::make('title')
                         ->required()
                         ->reactive()
+                        ->translatable()
                         ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
 
-                    Forms\Components\TextInput::make('slug')
+                    TextInput::make('slug')
                         ->disabled()
                         ->required()
+                        ->translatable()
                         ->unique(Post::class, 'slug', fn($record) => $record),
 
-                    Forms\Components\Textarea::make('excerpt')
+                    Textarea::make('excerpt')
                         ->rows(2)
                         ->minLength(50)
                         ->maxLength(1000)
+                        ->translatable()
                         ->columnSpan([
                             'sm' => 2,
                         ]),
@@ -73,7 +76,17 @@ class PostForm extends Component implements HasForms
                             'sm' => 2,
                         ]),
 
-                    self::getContentEditor('content'),
+                    RichEditor::make('content')
+                        ->label(__('Content'))
+                        ->required()
+                        ->translatable()
+                        ->disableToolbarButtons([
+                            'attachFiles',
+                            'codeBlock',
+                        ])
+                        ->columnSpan([
+                            'sm' => 2,
+                        ]),
 
                     Forms\Components\Select::make('category_id')
                         ->relationship('category', 'name->en')
