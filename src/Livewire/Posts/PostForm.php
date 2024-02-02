@@ -12,37 +12,44 @@ use Lunar\Models\Language;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
 use XtendLunar\Addons\PageBuilder\Fields\TextArea;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
-use XtendLunar\Addons\PageBuilder\Models\BlogPost as Post;
+use XtendLunar\Addons\PageBuilder\Models\BlogPost;
 
 class PostForm extends Component implements HasForms
 {
     use InteractsWithForms;
     use Notifies;
 
-    public Post $post;
+    public BlogPost $post;
 
     public function mount($post = null)
     {
-        $this->post = $post ?? new Post;
-
+        $this->post = $post ?? new BlogPost;
 
         $state = [
-            'title'            => $this->post->title,
-            'slug'             => $this->post->slug,
-            'excerpt'          => $this->post->excerpt,
-            'content'          => $this->post->content,
-            'banner'           => $this->post->banner,
+            'slug' => $this->post->slug,
+            'banner' => $this->post->banner,
             'blog_category_id' => $this->post->blog_category_id,
-            'status'           => $this->post->status ?? 'draft',
+            'status' => $this->post->status ?? 'draft',
         ];
 
-        $content = Language::all()->mapWithKeys(fn(Language $language) => [
-            'content.' . $language->code => $this->post?->translate('content', $language->code),
-        ])->toArray();
+        $translatableState = $this->setTranslatableState([
+            'title',
+            'excerpt',
+            'content',
+        ]);
 
-        $state = array_merge($state, $content);
+        $state = array_merge($state, $translatableState);
 
         $this->form->fill($state);
+    }
+
+    protected function setTranslatableState(array $fields): array
+    {
+        return collect($fields)->mapWithKeys(function ($field) {
+            return Language::all()->mapWithKeys(fn(Language $language) => [
+                $field . '.' . $language->code => $this->post?->translate($field, $language->code),
+            ])->toArray();
+        })->toArray();
     }
 
     protected function getFormModel()
@@ -64,8 +71,7 @@ class PostForm extends Component implements HasForms
                     TextInput::make('slug')
                         ->disabled()
                         ->required()
-                        ->translatable()
-                        ->unique(Post::class, 'slug', fn($record) => $record),
+                        ->unique(BlogPost::class, 'slug', fn($record) => $record),
 
                     Textarea::make('excerpt')
                         ->rows(2)
@@ -105,7 +111,7 @@ class PostForm extends Component implements HasForms
                         ->options([
                             'draft'     => __('Draft'),
                             'published' => __('Published'),
-                        ])
+                        ]),
                 ])
                 ->columns([
                     'sm' => 2,
