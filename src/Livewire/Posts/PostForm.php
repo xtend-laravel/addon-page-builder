@@ -24,11 +24,11 @@ class PostForm extends Component implements HasForms
     public function mount()
     {
         $state = $this->post ? [
-            'slug' => $this->post->slug,
-            'title' => $this->post->title,
-            'banner' => $this->post->banner,
+            'slug'             => $this->post->slug,
+            'title'            => $this->post->title,
+            'banner'           => $this->post->banner,
             'blog_category_id' => $this->post->blog_category_id,
-            'status' => $this->post->status ?? 'draft',
+            'status'           => $this->post->status ?? 'draft',
         ] : ['status' => 'draft'];
 
         $translatableState = $this->setRichAreaTranslatableState([
@@ -84,17 +84,8 @@ class PostForm extends Component implements HasForms
                             'sm' => 2,
                         ]),
 
-                    RichEditor::make('content')
-                        ->label(__('Content'))
-                        ->required()
-                        ->translatable()
-                        ->disableToolbarButtons([
-                            'attachFiles',
-                            'codeBlock',
-                        ])
-                        ->columnSpan([
-                            'sm' => 2,
-                        ]),
+                    $this->contentFormComponent()
+                        ->columnSpan(2),
 
                     Forms\Components\Select::make('category_id')
                         ->relationship('category', 'name->en'),
@@ -111,6 +102,23 @@ class PostForm extends Component implements HasForms
                 ])
                 ->columnSpan(2),
         ];
+    }
+
+    protected function contentFormComponent()
+    {
+        $languages = Language::all();
+
+        $tabs = Forms\Components\Tabs::make('Content')
+            ->schema(function () use ($languages) {
+                return $languages->map(function (Language $language) {
+                    return Forms\Components\Tabs\Tab::make(strtoupper($language->code))
+                        ->schema([
+                            RichEditor::make('content.' . $language->code)->disableLabel()
+                        ]);
+                })->toArray();
+            });
+
+        return $tabs;
     }
 
     public function submit(): void
