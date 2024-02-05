@@ -17,7 +17,7 @@ class BlogPostRepository extends Repository
 
     protected static function booting(): void
     {
-        $identifier = Str::slug(request()->route()->parameter('repositoryId'), '_');
+        $identifier = request()->route()->parameter('repositoryId');
         $blogPost = BlogPost::query()->firstWhere('slug', $identifier);
 
         if ($blogPost) {
