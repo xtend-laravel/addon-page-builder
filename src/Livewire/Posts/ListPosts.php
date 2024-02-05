@@ -26,7 +26,7 @@ class ListPosts extends Component implements HasTable
                 ->searchable()
                 ->sortable(),
             Tables\Columns\TextColumn::make('category.name')
-                ->getStateUsing(fn($record) => $record->category->translate('name'))
+                ->getStateUsing(fn($record) => $record->category?->translate('name'))
                 ->searchable()
                 ->sortable(),
             Tables\Columns\BadgeColumn::make('status')
