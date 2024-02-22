@@ -6,6 +6,8 @@ use Binaryk\LaravelRestify\Traits\InteractsWithRestifyRepositories;
 use CodeLabX\XtendLaravel\Base\XtendAddonProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
+use Lunar\Hub\Auth\Manifest;
+use Lunar\Hub\Auth\Permission;
 use Lunar\Hub\Facades\Menu;
 use Lunar\Hub\Menu\MenuLink;
 use Livewire\Livewire;
@@ -82,8 +84,15 @@ class PageBuilderProvider extends XtendAddonProvider
                     ->handle('hub.content.categories')
                     ->route('hub.content.categories.index')
                     ->icon('collection');
-            })
-        ;
+            });
+
+        $manifest = $this->app->get(Manifest::class);
+
+        $manifest->addPermission(function (Permission $permission) {
+            $permission->name = 'Manage Pages';
+            $permission->handle = 'hub.page-builder:manage-pages';
+            $permission->description = 'Allow the staff member to manage pages';
+        });
     }
 
     protected function registerLivewireComponents(): void
