@@ -13,7 +13,7 @@ use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Create;
 use XtendLunar\Addons\PageBuilder\Livewire\WidgetSlots\Edit;
 
 Route::prefix(config('lunar-hub.system.path'))
-    ->middleware(['web', Authenticate::class, 'can:settings:core'])
+    ->middleware(['web', Authenticate::class, 'can:hub.page-builder:manage-pages'])
     ->group(function () {
         /**
          * Page routes
