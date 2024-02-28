@@ -2,6 +2,7 @@
 
 namespace XtendLunar\Addons\PageBuilder\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,10 +18,17 @@ class WidgetSlot extends Model
         'identifier',
         'enabled',
         'params',
+        'seo_title',
+        'seo_description',
+        'seo_keywords',
+        'seo_image',
     ];
 
     protected $casts = [
         'params' => 'array',
+        'seo_title' => AsCollection::class,
+        'seo_description' => AsCollection::class,
+        'seo_keywords' => AsCollection::class,
     ];
 
     public function page(): HasOne

@@ -7,6 +7,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Toggle;
@@ -22,8 +23,10 @@ use XtendLunar\Addons\PageBuilder\Base\ComponentWidget;
 use XtendLunar\Addons\PageBuilder\Enums\WidgetType;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
+use XtendLunar\Addons\PageBuilder\Fields\TextArea as TextAreaTranslatable;
 use XtendLunar\Addons\PageBuilder\Models\Widget;
 use XtendLunar\Addons\PageBuilder\Models\WidgetSlot;
+use XtendLunar\Features\FormBuilder\Fields\Tags;
 
 class Edit extends Component implements HasForms
 {
@@ -55,6 +58,10 @@ class Edit extends Component implements HasForms
     {
         return [
             'description' => $this->widgetSlot->description,
+            'seo_title' => $this->widgetSlot->seo_title,
+            'seo_description' => $this->widgetSlot->seo_description,
+            'seo_keywords' => $this->widgetSlot->seo_keywords,
+            'seo_image' => $this->widgetSlot->seo_image,
             'widgets'     => $this->widgetSlot->widgets->map(function (Widget $widget) {
                 $pivotData = json_decode($widget->pivot->data, true);
                 $data = $widget->setHidden(['pivot', 'updated_at', 'created_at', 'type', 'id'])->toArray();
@@ -81,6 +88,10 @@ class Edit extends Component implements HasForms
         return [
             'image_upload' => $this->widgetSlot->page?->image_upload,
             'heading' => $page?->heading,
+            'seo_title' => $page?->seo_title,
+            'seo_description' => $page?->seo_description,
+            'seo_keywords' => $page?->seo_keywords,
+            'seo_image' => $page?->seo_image,
             ...$content,
         ];
     }
@@ -135,6 +146,22 @@ class Edit extends Component implements HasForms
                         return RichEditor::make('content.' . $language->code)
                             ->label($language->name);
                     })->toArray(),
+                ]),
+            Section::make('seo')
+                ->heading('SEO Meta')
+                ->schema([
+                    TextInput::make('seo_title')
+                        ->label('SEO Meta Title')
+                        ->translatable(),
+                    TextAreaTranslatable::make('seo_description')
+                            ->label('SEO Meta Description')
+                            ->translatable(),
+                    TagsInput::make('seo_keywords')
+                        ->label('SEO Meta Keywords'),
+                    FileUpload::make('seo_image')
+                        ->visibility('private')
+                        ->directory('cms/images')
+                        ->preserveFilenames(),
                 ]),
         ];
     }
@@ -204,7 +231,17 @@ class Edit extends Component implements HasForms
 
     public function submit()
     {
-        $this->widgetSlot->forceFill($this->form->getStateOnly(['identifier', 'type', 'name', 'language_id', 'description']))->save();
+        $this->widgetSlot->forceFill($this->form->getStateOnly([
+            'identifier',
+            'type',
+            'name',
+            'language_id',
+            'description',
+            'seo_title',
+            'seo_description',
+            'seo_keywords',
+            'seo_image',
+        ]))->save();
 
         $this->form->getState()['type'] === 'cms'
             ? $this->saveCms()
@@ -217,6 +254,10 @@ class Edit extends Component implements HasForms
             'widget_slot_id' => $this->widgetSlot->id,
         ], [
             'image_upload' => $this->form->getState()['image_upload'],
+            'seo_title' => $this->form->getState()['seo_title'],
+            'seo_description' => $this->form->getState()['seo_description'],
+            'seo_keywords' => $this->form->getState()['seo_keywords'],
+            'seo_image' => $this->form->getState()['seo_image'],
             'heading' => $this->form->getState()['heading'],
             'content' => $this->form->getState()['content'],
         ]);

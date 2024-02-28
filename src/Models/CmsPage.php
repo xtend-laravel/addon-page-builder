@@ -16,6 +16,9 @@ class CmsPage extends Pivot
     protected $casts = [
         'heading' => AsCollection::class,
         'content' => AsCollection::class,
+        'seo_title' => AsCollection::class,
+        'seo_description' => AsCollection::class,
+        'seo_keywords' => AsCollection::class,
     ];
 
     protected $fillable = [
@@ -23,6 +26,10 @@ class CmsPage extends Pivot
         'image_upload',
         'heading',
         'content',
+        'seo_title',
+        'seo_description',
+        'seo_keywords',
+        'seo_image',
     ];
 
     public function widgetSlot(): BelongsTo

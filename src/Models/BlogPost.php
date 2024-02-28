@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Hub\Models\Staff;
-use XtendLunar\Addons\PageBuilder\Concerns\HasSlug;
 
 class BlogPost extends Model
 {
@@ -21,6 +20,9 @@ class BlogPost extends Model
         'title' => AsCollection::class,
         'excerpt' => AsCollection::class,
         'content' => AsCollection::class,
+        'seo_title' => AsCollection::class,
+        'seo_description' => AsCollection::class,
+        'seo_keywords' => AsCollection::class,
         'is_visible' => 'boolean',
     ];
 
