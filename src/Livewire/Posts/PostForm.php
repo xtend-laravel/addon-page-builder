@@ -2,15 +2,18 @@
 
 namespace XtendLunar\Addons\PageBuilder\Livewire\Posts;
 
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Language;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
-use XtendLunar\Addons\PageBuilder\Fields\TextArea;
+use XtendLunar\Addons\PageBuilder\Fields\TextArea as TextAreaTranslatable;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
 use XtendLunar\Addons\PageBuilder\Models\BlogPost;
 
@@ -27,6 +30,8 @@ class PostForm extends Component implements HasForms
             'slug' => $this->post->slug,
             'title' => $this->post->title,
             'banner' => $this->post->banner,
+            'seo_keywords' => $this->post->seo_keywords,
+            'seo_image' => $this->post->seo_image,
             'blog_category_id' => $this->post->blog_category_id,
             'status' => $this->post->status ?? 'draft',
         ] : ['status' => 'draft'];
@@ -34,6 +39,8 @@ class PostForm extends Component implements HasForms
         $translatableState = $this->setRichAreaTranslatableState([
             'excerpt',
             'content',
+            'seo_title',
+            'seo_description',
         ]);
 
         $state = array_merge($state, $translatableState);
@@ -56,6 +63,19 @@ class PostForm extends Component implements HasForms
     }
 
     protected function getFormSchema(): array
+    {
+        return [
+            Forms\Components\Tabs::make('Post')
+                ->tabs([
+                    Tabs\Tab::make('General')
+                        ->schema($this->getPostFormSchema()),
+                    Tabs\Tab::make('SEO')
+                        ->schema($this->getSeoFormSchema()),
+                ]),
+        ];
+    }
+
+    protected function getPostFormSchema(): array
     {
         return [
             Forms\Components\Card::make()
@@ -104,6 +124,27 @@ class PostForm extends Component implements HasForms
         ];
     }
 
+    protected function getSeoFormSchema()
+    {
+        return [
+            Forms\Components\Card::make()
+                ->schema([
+                    TextInput::make('seo_title')
+                        ->label('SEO Meta Title')
+                        ->translatable(),
+                    TextAreaTranslatable::make('seo_description')
+                            ->label('SEO Meta Description')
+                            ->translatable(),
+                    TagsInput::make('seo_keywords')
+                        ->label('SEO Meta Keywords'),
+                    FileUpload::make('seo_image')
+                        ->visibility('private')
+                        ->directory('cms/images')
+                        ->preserveFilenames(),
+                ]),
+        ];
+    }
+
     protected function contentFormComponent()
     {
         $languages = Language::all();
@@ -113,7 +154,7 @@ class PostForm extends Component implements HasForms
                 return $languages->map(function (Language $language) {
                     return Forms\Components\Tabs\Tab::make(strtoupper($language->code))
                         ->schema([
-                            RichEditor::make('content.' . $language->code)->disableLabel()
+                            RichEditor::make('content.' . $language->code)->disableLabel(),
                         ]);
                 })->toArray();
             });
