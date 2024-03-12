@@ -44,13 +44,16 @@ class Edit extends Component implements HasForms
 
     public function mount()
     {
+        $mountType = $this->widgetSlot->type === 'cms'
+            ? $this->mountCms()
+            : $this->mountBuilder();
+
         $this->form->fill([
             'identifier'  => Str::of($this->widgetSlot->identifier)->replace('_clone', '')->value(),
             'type'        => $this->widgetSlot->type,
             'name'        => Str::of($this->widgetSlot->name)->replace(' (clone)', '')->value(),
             'language_id' => $this->widgetSlot->language_id,
-            ...$this->mountBuilder(),
-            ...$this->mountCms(),
+            ...$mountType,
         ]);
     }
 
@@ -60,7 +63,6 @@ class Edit extends Component implements HasForms
             'description' => $this->widgetSlot->description,
             'seo_title' => $this->widgetSlot->seo_title,
             'seo_description' => $this->widgetSlot->seo_description,
-            'seo_keywords' => $this->widgetSlot->seo_keywords,
             'seo_image' => $this->widgetSlot->seo_image,
             'widgets'     => $this->widgetSlot->widgets->map(function (Widget $widget) {
                 $pivotData = json_decode($widget->pivot->data, true);
@@ -90,7 +92,6 @@ class Edit extends Component implements HasForms
             'heading' => $page?->heading,
             'seo_title' => $page?->seo_title,
             'seo_description' => $page?->seo_description,
-            'seo_keywords' => $page?->seo_keywords,
             'seo_image' => $page?->seo_image,
             ...$content,
         ];
@@ -156,8 +157,6 @@ class Edit extends Component implements HasForms
                     TextAreaTranslatable::make('seo_description')
                             ->label('SEO Meta Description')
                             ->translatable(),
-                    TagsInput::make('seo_keywords')
-                        ->label('SEO Meta Keywords'),
                     FileUpload::make('seo_image')
                         ->visibility('private')
                         ->directory('cms/images')

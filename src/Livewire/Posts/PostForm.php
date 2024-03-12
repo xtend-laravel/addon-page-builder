@@ -3,7 +3,6 @@
 namespace XtendLunar\Addons\PageBuilder\Livewire\Posts;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Str;
@@ -30,7 +29,6 @@ class PostForm extends Component implements HasForms
             'slug' => $this->post->slug,
             'title' => $this->post->title,
             'banner' => $this->post->banner,
-            'seo_keywords' => $this->post->seo_keywords,
             'seo_image' => $this->post->seo_image,
             'blog_category_id' => $this->post->blog_category_id,
             'status' => $this->post->status ?? 'draft',
@@ -135,8 +133,6 @@ class PostForm extends Component implements HasForms
                     TextAreaTranslatable::make('seo_description')
                             ->label('SEO Meta Description')
                             ->translatable(),
-                    TagsInput::make('seo_keywords')
-                        ->label('SEO Meta Keywords'),
                     FileUpload::make('seo_image')
                         ->visibility('private')
                         ->directory('cms/images')
