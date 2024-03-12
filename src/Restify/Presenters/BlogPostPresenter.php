@@ -27,6 +27,11 @@ class BlogPostPresenter extends PresenterResource implements Presentable
             ],
             'created_at' => Carbon::parse($this->data['created_at'])->format('M d, Y H:i a'),
             'updated_at' => Carbon::parse($this->data['updated_at'])->format('M d, Y H:i a'),
+            'seo' => [
+                'title' => $this->repository->model()->translate('seo_title'),
+                'description' => $this->repository->model()->translate('seo_description'),
+                'image' => $this->data['seo_image'] ? Storage::disk('do')->url($this->data['seo_image']) : null,
+            ],
         ];
     }
 }
