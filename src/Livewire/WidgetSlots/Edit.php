@@ -238,7 +238,6 @@ class Edit extends Component implements HasForms
             'description',
             'seo_title',
             'seo_description',
-            'seo_keywords',
             'seo_image',
         ]))->save();
 
@@ -255,7 +254,6 @@ class Edit extends Component implements HasForms
             'image_upload' => $this->form->getState()['image_upload'],
             'seo_title' => $this->form->getState()['seo_title'],
             'seo_description' => $this->form->getState()['seo_description'],
-            'seo_keywords' => $this->form->getState()['seo_keywords'],
             'seo_image' => $this->form->getState()['seo_image'],
             'heading' => $this->form->getState()['heading'],
             'content' => $this->form->getState()['content'],
