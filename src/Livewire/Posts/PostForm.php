@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Components\Tabs;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Language;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use XtendLunar\Addons\PageBuilder\Fields\RichEditor;
 use XtendLunar\Addons\PageBuilder\Fields\TextArea as TextAreaTranslatable;
 use XtendLunar\Addons\PageBuilder\Fields\TextInput;
@@ -150,7 +151,7 @@ class PostForm extends Component implements HasForms
                 return $languages->map(function (Language $language) {
                     return Forms\Components\Tabs\Tab::make(strtoupper($language->code))
                         ->schema([
-                            RichEditor::make('content.' . $language->code)->disableLabel(),
+                            TinyEditor::make('content.' . $language->code)->disableLabel(),
                         ]);
                 })->toArray();
             });

@@ -24,6 +24,7 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "stephenjude/filament-blog": "^1.1"
+        "stephenjude/filament-blog": "^1.1",
+        "mohamedsabil83/filament-forms-tinyeditor": "1.x-dev"
     }
 }
